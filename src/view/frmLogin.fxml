@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #36454f;" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints vgrow="SOMETIMES" />
+    <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <PasswordField fx:id="pwdPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.5" prefHeight="25.0" prefWidth="250.0" promptText="Password" scaleShape="false" style="-fx-background-color: none; -fx-border-color: transparent transparent #ff4500 transparent; -fx-border-width: 0 0 2 0;" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+      </PasswordField>
+      <TextField fx:id="txtUserName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.5" prefHeight="25.0" prefWidth="250.0" promptText="Username" scaleShape="false" style="-fx-border-width: 0 0 2 0; -fx-border-color: transparent transparent #ff4500 transparent; -fx-background-color: none;" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <font>
+            <Font name="Open Sans" size="12.0" />
+         </font>
+      </TextField>
+      <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Okey Dokey" textAlignment="CENTER" textFill="#ff4500" underline="true" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+         <font>
+            <Font name="Open Sans" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Aaargh!" textFill="#ff4500" underline="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+   </children>
+</GridPane>
