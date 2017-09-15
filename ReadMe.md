@@ -1,9 +1,9 @@
 # README
 
-* Include Instructions for Evaulators
+* Include Instructions for Evaluators
 ## Current Folders
 
-* `src`
+* `c195`
   * `style`
   * `views`
   * `controllers`
@@ -12,3 +12,4 @@
 * Database: U03HA0
 * UserName: U03HA0
 * Password: 53687976576
+### Token
