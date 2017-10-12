@@ -3,7 +3,6 @@ package data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 
 public class SQLConnection {
@@ -14,7 +13,7 @@ public class SQLConnection {
     private static final String SQL_PASSWORD = "53687976576";
 
     private static Connection conn = null;
-    private static Statement stmnt = null;
+   // private static Statement stmnt = null;
 
     static {
         try {
@@ -23,6 +22,10 @@ public class SQLConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    static Connection getConn(){
+        return conn;
     }
 
 
