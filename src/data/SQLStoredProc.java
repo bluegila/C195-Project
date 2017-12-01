@@ -16,7 +16,7 @@ public class SQLStoredProc
         sqlParams = new ArrayList<>();
     }
 
-    CallableStatement getCallableStmnt(SQLConnection) throws Exception
+    CallableStatement getCallableStmnt(SQLConnection conn) throws Exception
     {
         CallableStatement statement = SQLConnection.getConn().prepareCall(getQuery());
         setStatementParameters(statement);
