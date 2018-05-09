@@ -2,6 +2,7 @@ package controllers;
 
 //region Imports
 import data.SQLAppointmentDAO;
+import javafx.scene.layout.Pane;
 import models.*;
 import data.SQLContactDAO;
 import javafx.collections.FXCollections;
@@ -12,19 +13,27 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
 import java.io.IOException;
+
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
+
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
 import java.util.*;
 
 import javafx.event.ActionEvent;
 import utilities.TimeValidation;
+
+
 //endregion
 
 //region @FXML
 public class CalendarViewControl implements Initializable
 {
+    @FXML
+    private Pane root;
     @FXML
     private GridPane calLabel;
     @FXML
@@ -115,6 +124,18 @@ public class CalendarViewControl implements Initializable
         } catch (SQLException e) {
             e.printStackTrace();
         }
+/*
+        try {
+            List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
+            for (int i = 1; i < FXCollections.observableArrayList(appointments).size();i++)
+            {
+                if appointments.get(i).getStartDate().minusDays(1).isAfter()
+                Button btnAppointment = new Button();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } */
        /* btnContactOK.setOnAction(e ->
         {
             Contact selectedContact = listContacts.getSelectionModel().getSelectedItem();
@@ -212,7 +233,17 @@ public class CalendarViewControl implements Initializable
             dayOfWeekLabel.setStyle(cssButtonDefault);
             calDaysMonth.add(dayOfWeekLabel,col,0);
         }
-       // GridPane calDaysMonth
+
+        try
+        {
+            List<Appointment> selectAllAppointmentsSelectedWeek = SQLAppointmentDAO.selectAppointment();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+
 
     }
     //endregion
@@ -222,12 +253,85 @@ public class CalendarViewControl implements Initializable
         Calendar calendarWeek = calendar;
         calendarWeek.get(Calendar.WEEK_OF_YEAR);
         calendarWeek.set(Calendar.DAY_OF_WEEK,1);
-       // final String cssGridLines =
-       //         "-fx-stroke: #799485;";
-      //  calWeek.setStyle(cssGridLines);
+        final double PX_PER_HOUR = 50d;
+        final double START_HOUR = 8d;
+        final double XLAYOUT_OFFSET = 300d;
+        final double PX_PER_DAY = 125d;
+        final double YLAYOUT_OFFSET = 490d;
+
+        try {
+            List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
+            for (int j = 1; j < FXCollections.observableArrayList(appointments).size() + 1;j++)
+            {
+                int weekOfYear = appointments.get(j).getStartDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+              //  int appointmentStart = (int)appointments.get(j).getStartDate().toEpochSecond();
+               // int appointmentEnd = (int)appointments.get(j).getEndDate().toEpochSecond();
+                double appointmentStart = (double) appointments.get(j).getStartDate().getHour() +
+                        (appointments.get(j).getStartDate().getMinute() / 60d);
+                double appointmentEnd = (double) appointments.get(j).getEndDate().getHour() +
+                        (appointments.get(j).getEndDate().getMinute() / 60d);
+                double appointmentDayofWeek = (double) appointments.get(j).getStartDate().getDayOfWeek().getValue();
+
+
+                double appointmentLength = appointmentEnd - appointmentStart;
+
+             //   if (weekOfYear == calendarWeek.get(Calendar.WEEK_OF_YEAR))
+                {
+                    Button btnAppointment = new Button("TEST");
+                    btnAppointment.setPrefWidth(125.0);
+                    btnAppointment.setPrefHeight(appointmentLength * PX_PER_HOUR);
+                    btnAppointment.setLayoutX((appointmentStart - START_HOUR) * (PX_PER_HOUR) + XLAYOUT_OFFSET);
+                    btnAppointment.setLayoutY((appointmentDayofWeek - 1d) * (PX_PER_DAY) + YLAYOUT_OFFSET);
+                    btnAppointment.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+
+                 //   root.getChildren().add(btnAppointment);
+                    btnAppointment.toFront();
+                    System.out.println(btnAppointment.getLayoutX());
+                //    btnAppointment.setBackground('#ffffff');
+                  //  btnAppointment.setBorder();
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (int row = 1; row < 30; row++)
+        {
+
+            for (int amHour = 5; amHour < 12 & row < 15; amHour++, row++)
+            {
+                String strAMHour = Integer.toString(amHour) + ":00 AM";
+                Label hourLabel = new Label();
+                hourLabel.setText(strAMHour);
+                calWeek.add(hourLabel,0,row);
+                hourLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 14));
+                hourLabel.setStyle("-fx-text-alignment:center;-fx-alignment: center;-fx-label-padding: 5px;;-fx-pref-width: 100px;");
+                row++;
+            }
+
+            String strNoon = "12:00 PM";
+            Label noonLabel = new Label();
+            noonLabel.setText(strNoon);
+            calWeek.add(noonLabel,0,row);
+            noonLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 14));
+            noonLabel.setStyle("-fx-text-alignment:center;-fx-alignment: center;-fx-label-padding: 5px;-fx-pref-width: 100px;");
+            row = row + 2;
+
+            for (int pmHour = 1; row < 30; pmHour++, row++)
+            {
+                String strPMHour = Integer.toString(pmHour) + ":00 PM";
+                Label hourLabel = new Label();
+                hourLabel.setText(strPMHour);
+                calWeek.add(hourLabel,0,row);
+                hourLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 14));
+                hourLabel.setStyle("-fx-text-alignment:center;-fx-alignment: center;-fx-label-padding: 5px;-fx-pref-width: 100px;");
+                row++;
+            }
+        }
         for (int i = 0; i < 7; i++)
         {
-            //build columns w/ data from calendar
+
             //add appt data too
 
 
@@ -318,11 +422,13 @@ public class CalendarViewControl implements Initializable
             String contactPhone = txtPhone.getText();
             Boolean contactActive = boxActive.isSelected();
 
+            String contactID = lblCustomerID.getText();
+
             SQLContactDAO contactSQL = new SQLContactDAO();
 
             City city = new City(contactCity,objCountry);
             Address address = new Address(contactAddress,contactAddress2, city, contactZip, contactPhone);
-            Contact contact = new Contact(contactName, address, contactActive);
+            Contact contact = new Contact(contactID,contactName, address, contactActive);
 
             if (lblCustomerID.getText().equals("0"))
             {
@@ -371,7 +477,8 @@ public class CalendarViewControl implements Initializable
 
     private void loadAppointments(){;} //TODO This Method
 
-    private void addAppointment(ActionEvent actionEvent)
+    @FXML
+    private void addAppointment(ActionEvent actionEvent) throws IOException, SQLException
     {
         if (fieldsAppointmentValidate()) {
             Contact customer = boxCustomer.getSelectionModel().getSelectedItem();
@@ -396,20 +503,19 @@ public class CalendarViewControl implements Initializable
                 alert.showAndWait();
             }
 
-            String startDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-            String startTime = new SimpleDateFormat("hh:mm").format(start);
-            LocalDate datePart = LocalDate.parse(startDate);
-            LocalTime timePart = LocalTime.parse(startTime);
-            LocalDateTime startDateTime = LocalDateTime.of(datePart, timePart);
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+            LocalTime timePart = LocalTime.parse(start, timeFormatter);
+            LocalDateTime startDateTime = LocalDateTime.of(date, timePart);
             LocalDateTime endDateTime = startDateTime.plusMinutes(appointmentLength);
-
-            ZoneId zoneId = ZoneId.of("America/Denver");//set this to Locale variable once defined
-            ZonedDateTime zonedStartDateTime = startDateTime.atZone(zoneId);
-            ZonedDateTime zonedEndDateTime = endDateTime.atZone(zoneId);
+            ZoneId zid = ZoneId.systemDefault();
+            ZonedDateTime zonedStartDateTime = startDateTime.atZone(zid);
+            ZonedDateTime zonedEndDateTime = endDateTime.atZone(zid);
+            Timestamp sqlStartDateTime = Timestamp.valueOf(startDateTime);
+            Timestamp sqlEndDateTime = Timestamp.valueOf(endDateTime);
 
             SQLAppointmentDAO appointmentSQL = new SQLAppointmentDAO();
 
-            Appointment appointment = new Appointment(customer, subject, description, location, url, contact, zonedStartDateTime, zonedEndDateTime);
+            Appointment appointment = new Appointment(customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
 
             if (lblApptId.getText().equals("0"))
             {
@@ -446,8 +552,9 @@ public class CalendarViewControl implements Initializable
         }
         else
         {
-            TimeValidation timeValidation = null;
-            if (timeValidation.timeValidate((txtStartTime.getText().trim()))) {
+           TimeValidation timeValidation = new TimeValidation();
+           String time = txtStartTime.getText().trim();
+            if (timeValidation.timeValidate(time)){
                 return true;
             }
         }

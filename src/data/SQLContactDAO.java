@@ -1,13 +1,11 @@
 package data;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import controllers.CalendarViewControl;
 import models.*;
 import controllers.LoginControl;
 
@@ -80,7 +78,7 @@ public class SQLContactDAO
         int countryID = objCountry.getCountryID();
 
         String uname = LoginControl.getCurrentUser().toString();
-        java.sql.Date saveDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        java.sql.Timestamp saveDate = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
 
         PreparedStatement maxCityIdSelectStmnt = conn.prepareStatement(
                 "SELECT MAX(cityid) FROM city");
@@ -107,9 +105,9 @@ public class SQLContactDAO
         cityInsertStmnt.setInt(1,++maxCityId);
         cityInsertStmnt.setString(2,city);
         cityInsertStmnt.setInt(3,countryID);
-        cityInsertStmnt.setDate(4, saveDate);
+        cityInsertStmnt.setTimestamp(4, saveDate);
         cityInsertStmnt.setString(5, uname);
-        cityInsertStmnt.setDate(6, saveDate);
+        cityInsertStmnt.setTimestamp(6, saveDate);
         cityInsertStmnt.setString(7, uname);
         cityInsertStmnt.setString(8,city);
         cityInsertStmnt.setInt(9,countryID);
@@ -132,9 +130,9 @@ public class SQLContactDAO
         addressInsertStmnt.setInt(4, (cityIDRS.getInt(1)));
         addressInsertStmnt.setString(5, zip);
         addressInsertStmnt.setString(6, phone);
-        addressInsertStmnt.setDate(7, saveDate);
+        addressInsertStmnt.setTimestamp(7, saveDate);
         addressInsertStmnt.setString(8, uname);
-        addressInsertStmnt.setDate(9, saveDate);
+        addressInsertStmnt.setTimestamp(9, saveDate);
         addressInsertStmnt.setString(10, uname);
 
         addressInsertStmnt.setString(11,address);
@@ -159,9 +157,9 @@ public class SQLContactDAO
         contactInsertStmnt.setString(2, contact);
         contactInsertStmnt.setInt(3,addressIDRS.getInt(1));
         contactInsertStmnt.setBoolean(4,active);
-        contactInsertStmnt.setDate(5, saveDate);
+        contactInsertStmnt.setTimestamp(5, saveDate);
         contactInsertStmnt.setString(6, uname);
-        contactInsertStmnt.setDate(7, saveDate);
+        contactInsertStmnt.setTimestamp(7, saveDate);
         contactInsertStmnt.setString(8, uname);
         contactInsertStmnt.setString(9, contact);
         contactInsertStmnt.setInt(10, addressIDRS.getInt(1));
@@ -186,7 +184,7 @@ public class SQLContactDAO
         int countryID = objCountry.getCountryID();
 
         String uname = LoginControl.getCurrentUser().toString();
-        java.sql.Date saveDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        Timestamp saveDate = new Timestamp(Calendar.getInstance().getTime().getTime());
 
         PreparedStatement maxCityIdSelectStmnt = conn.prepareStatement(
                 "SELECT MAX(cityid) FROM city");
@@ -200,12 +198,13 @@ public class SQLContactDAO
         maxAddressIdRS.next();
         int maxAddressId = maxAddressIdRS.getInt(1);
 
+        /*
         PreparedStatement contactIdSelectStmnt = conn.prepareStatement(
                 "SELECT customerId FROM customer");
         ResultSet customerIdRS = contactIdSelectStmnt.executeQuery();
         customerIdRS.next();
-        int customerId = customerIdRS.getInt(1);
-
+        int contactIdOLD = customerIdRS.getInt(1);
+        */
         PreparedStatement cityUpdateStmnt = conn.prepareStatement
                 ("INSERT INTO city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy)" +
                         "SELECT * FROM (SELECT ? AS cityId, ? AS city, ? AS countryID, ? AS createDate, ? AS createdBy, ? AS lastUpDate, ? AS lastUpdateBy) AS cityTemp WHERE NOT EXISTS" +
@@ -213,9 +212,9 @@ public class SQLContactDAO
         cityUpdateStmnt.setInt(1,++maxCityId);
         cityUpdateStmnt.setString(2,city);
         cityUpdateStmnt.setInt(3,countryID);
-        cityUpdateStmnt.setDate(4, saveDate);
+        cityUpdateStmnt.setTimestamp(4, saveDate);
         cityUpdateStmnt.setString(5, uname);
-        cityUpdateStmnt.setDate(6, saveDate);
+        cityUpdateStmnt.setTimestamp(6, saveDate);
         cityUpdateStmnt.setString(7, uname);
 
         //WHERE NOT EXISTS parameters
@@ -240,9 +239,9 @@ public class SQLContactDAO
         addressUpdateStmnt.setInt(4, (cityIDRS.getInt(1)));
         addressUpdateStmnt.setString(5, zip);
         addressUpdateStmnt.setString(6, phone);
-        addressUpdateStmnt.setDate(7, saveDate);
+        addressUpdateStmnt.setTimestamp(7, saveDate);
         addressUpdateStmnt.setString(8, uname);
-        addressUpdateStmnt.setDate(9, saveDate);
+        addressUpdateStmnt.setTimestamp(9, saveDate);
         addressUpdateStmnt.setString(10, uname);
 
         //WHERE NOT EXISTS parameters
@@ -268,9 +267,9 @@ public class SQLContactDAO
         contactUpdateStmnt.setString(1, contact);
         contactUpdateStmnt.setInt(3,addressIDRS.getInt(1));
         contactUpdateStmnt.setBoolean(2,active);
-        contactUpdateStmnt.setDate(4, saveDate);
+        contactUpdateStmnt.setTimestamp(4, saveDate);
         contactUpdateStmnt.setString(5, uname);
-        contactUpdateStmnt.setInt(6, customerId);
+        contactUpdateStmnt.setInt(6, contactId);
         contactUpdateStmnt.execute();
     }
     //endregion

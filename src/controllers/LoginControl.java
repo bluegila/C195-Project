@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.scene.control.Dialog;
 import models.User;
 import data.SQLUserDAO;
 import javafx.event.ActionEvent;
@@ -7,7 +8,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class LoginControl
 {
@@ -37,10 +43,28 @@ public class LoginControl
             SceneManager.getMainStage().close();
             SceneManager.getCalendarScene();
             setCurrentUser(user);
+            loginLog();
         }
         else
         {
             badLogon();
+        }
+    }
+    private void loginLog()
+    {
+        File loginLogFile = new File(System.getProperty("user.dir") + "/login_log.txt");
+        try
+        {
+            loginLogFile.createNewFile();
+            FileWriter writer = new FileWriter(loginLogFile, true);
+            String log = getCurrentUser().getUsername() + " successfully logged in at " + LocalDateTime.now().format(
+                    DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "\n";
+            writer.append(log);
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
