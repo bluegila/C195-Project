@@ -2,6 +2,7 @@ package data;
 
 import controllers.LoginControl;
 import models.Appointment;
+import models.Contact;
 
 import java.sql.*;
 import java.time.ZoneId;
@@ -27,6 +28,7 @@ public class SQLAppointmentDAO
         {
             String customerName = appointmentsRS.getString(10);
             int customerId = appointmentsRS.getInt(1);
+            Contact objCustomer = new Contact(Integer.toString(customerId),customerName);
             String location = appointmentsRS.getString(2);
             String description = appointmentsRS.getString(3);
             String contact = appointmentsRS.getString(4);
@@ -39,12 +41,16 @@ public class SQLAppointmentDAO
             ZoneId zid = ZoneId.systemDefault();
             ZonedDateTime zdtStart = start.toLocalDateTime().atZone(ZoneId.of("UTC"));
             ZonedDateTime localStart = zdtStart.withZoneSameInstant(zid);
-            ZonedDateTime zdtEnd = start.toLocalDateTime().atZone((ZoneId.of("UTC")));
+            ZonedDateTime zdtEnd = end.toLocalDateTime().atZone((ZoneId.of("UTC")));
             ZonedDateTime localEnd = zdtEnd.withZoneSameInstant(zid);
 
           //  ZonedDateTime tempLocalStart = ZonedDateTime.from(localStart);
             long longDiffInMinutes = ChronoUnit.MINUTES.between(localStart, localEnd);
             int appointmentLength = (int) longDiffInMinutes;
+
+            Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location, contact, url, localStart, localEnd);
+
+            appointments.add(appointment);
         }
         return appointments;
     }

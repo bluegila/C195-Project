@@ -2,6 +2,8 @@ package controllers;
 
 //region Imports
 import data.SQLAppointmentDAO;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import models.*;
 import data.SQLContactDAO;
@@ -254,23 +256,26 @@ public class CalendarViewControl implements Initializable
         calendarWeek.get(Calendar.WEEK_OF_YEAR);
         calendarWeek.set(Calendar.DAY_OF_WEEK,1);
         final double PX_PER_HOUR = 50d;
-        final double START_HOUR = 8d;
+        final double START_HOUR = 5d;
         final double XLAYOUT_OFFSET = 300d;
         final double PX_PER_DAY = 125d;
         final double YLAYOUT_OFFSET = 490d;
+        TimeZone timezone = TimeZone.getTimeZone(ZoneId.systemDefault());
 
         try {
             List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
-            for (int j = 1; j < FXCollections.observableArrayList(appointments).size() + 1;j++)
+            int comparator = FXCollections.observableArrayList(appointments).size();
+            for (int j = 0; j <comparator; j++)
             {
-                int weekOfYear = appointments.get(j).getStartDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-              //  int appointmentStart = (int)appointments.get(j).getStartDate().toEpochSecond();
-               // int appointmentEnd = (int)appointments.get(j).getEndDate().toEpochSecond();
-                double appointmentStart = (double) appointments.get(j).getStartDate().getHour() +
+                System.out.println(appointments.get(j).getStartDate());
+                System.out.println(appointments.get(j).getStartDate().getHour());
+                ZonedDateTime localStartTime = appointments.get(j).getStartDate().toLocalDateTime().atZone(ZoneId.systemDefault());
+                System.out.println(localStartTime);
+                double appointmentStart = (double) localStartTime.getHour() +
                         (appointments.get(j).getStartDate().getMinute() / 60d);
                 double appointmentEnd = (double) appointments.get(j).getEndDate().getHour() +
                         (appointments.get(j).getEndDate().getMinute() / 60d);
-                double appointmentDayofWeek = (double) appointments.get(j).getStartDate().getDayOfWeek().getValue();
+                int appointmentDayofWeek = appointments.get(j).getStartDate().getDayOfWeek().getValue();
 
 
                 double appointmentLength = appointmentEnd - appointmentStart;
@@ -283,11 +288,13 @@ public class CalendarViewControl implements Initializable
                     btnAppointment.setLayoutX((appointmentStart - START_HOUR) * (PX_PER_HOUR) + XLAYOUT_OFFSET);
                     btnAppointment.setLayoutY((appointmentDayofWeek - 1d) * (PX_PER_DAY) + YLAYOUT_OFFSET);
                     btnAppointment.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+                    int row = (int)((appointmentStart - START_HOUR) * 2) + 1;
+                    int rowspan = (int)((appointmentLength) * 2);
+                    calWeek.add(btnAppointment,(appointmentDayofWeek + 1),row,1,rowspan);
 
-                 //   root.getChildren().add(btnAppointment);
                     btnAppointment.toFront();
-                    System.out.println(btnAppointment.getLayoutX());
-                //    btnAppointment.setBackground('#ffffff');
+
+                  //  btnAppointment.setBackground("#ffffff");
                   //  btnAppointment.setBorder();
                 }
 
@@ -510,9 +517,8 @@ public class CalendarViewControl implements Initializable
             ZoneId zid = ZoneId.systemDefault();
             ZonedDateTime zonedStartDateTime = startDateTime.atZone(zid);
             ZonedDateTime zonedEndDateTime = endDateTime.atZone(zid);
-            Timestamp sqlStartDateTime = Timestamp.valueOf(startDateTime);
-            Timestamp sqlEndDateTime = Timestamp.valueOf(endDateTime);
-
+            Timestamp sqlStartDateTime = Timestamp.valueOf(LocalDateTime.ofInstant(zonedStartDateTime.toInstant(), ZoneOffset.UTC));
+            Timestamp sqlEndDateTime = Timestamp.valueOf(LocalDateTime.ofInstant(zonedEndDateTime.toInstant(), ZoneOffset.UTC));
             SQLAppointmentDAO appointmentSQL = new SQLAppointmentDAO();
 
             Appointment appointment = new Appointment(customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
@@ -525,6 +531,7 @@ public class CalendarViewControl implements Initializable
                     e.printStackTrace();
                 }
             }
+            buildWeekView(Calendar.getInstance());
             /*
             else
             {
