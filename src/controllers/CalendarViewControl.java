@@ -267,10 +267,7 @@ public class CalendarViewControl implements Initializable
             int comparator = FXCollections.observableArrayList(appointments).size();
             for (int j = 0; j <comparator; j++)
             {
-                System.out.println(appointments.get(j).getStartDate());
-                System.out.println(appointments.get(j).getStartDate().getHour());
                 ZonedDateTime localStartTime = appointments.get(j).getStartDate().toLocalDateTime().atZone(ZoneId.systemDefault());
-                System.out.println(localStartTime);
                 double appointmentStart = (double) localStartTime.getHour() +
                         (appointments.get(j).getStartDate().getMinute() / 60d);
                 double appointmentEnd = (double) appointments.get(j).getEndDate().getHour() +
@@ -279,10 +276,12 @@ public class CalendarViewControl implements Initializable
 
 
                 double appointmentLength = appointmentEnd - appointmentStart;
+                final String cssButtonDefault =
+                        "-fx-background-color: #c6b1b1;-fx-text-alignment:center;-fx-alignment:center;-fx-text-fill:#8b4d4e;-fx-font-size: 9pt; -fx-border-color: #8b4d4e; -fx-border-width: 2px; ";
 
-             //   if (weekOfYear == calendarWeek.get(Calendar.WEEK_OF_YEAR))
+                if (appointments.get(j).getStartDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == calendarWeek.get(Calendar.WEEK_OF_YEAR))
                 {
-                    Button btnAppointment = new Button("TEST");
+                    Button btnAppointment = new Button(appointments.get(j).getObjCustomer().getCustomerName());
                     btnAppointment.setPrefWidth(125.0);
                     btnAppointment.setPrefHeight(appointmentLength * PX_PER_HOUR);
                     btnAppointment.setLayoutX((appointmentStart - START_HOUR) * (PX_PER_HOUR) + XLAYOUT_OFFSET);
@@ -291,11 +290,8 @@ public class CalendarViewControl implements Initializable
                     int row = (int)((appointmentStart - START_HOUR) * 2) + 1;
                     int rowspan = (int)((appointmentLength) * 2);
                     calWeek.add(btnAppointment,(appointmentDayofWeek + 1),row,1,rowspan);
-
+                    btnAppointment.setStyle(cssButtonDefault);
                     btnAppointment.toFront();
-
-                  //  btnAppointment.setBackground("#ffffff");
-                  //  btnAppointment.setBorder();
                 }
 
             }
@@ -338,10 +334,7 @@ public class CalendarViewControl implements Initializable
         }
         for (int i = 0; i < 7; i++)
         {
-
             //add appt data too
-
-
             int dow = calendarWeek.get(Calendar.DAY_OF_WEEK );
             if (dow == 1)
             {
@@ -527,11 +520,13 @@ public class CalendarViewControl implements Initializable
             {
                 try {
                     appointmentSQL.insertAppointment(appointment);
+                    buildWeekView(Calendar.getInstance());
+                    clearAppointmentForm();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-            buildWeekView(Calendar.getInstance());
+
             /*
             else
             {
@@ -543,6 +538,26 @@ public class CalendarViewControl implements Initializable
             }
             */
         }
+    }
+
+    @FXML
+    private void clearAppointment(ActionEvent actionEvent) throws IOException, SQLException
+    {
+        clearAppointmentForm();
+    }
+
+    private void clearAppointmentForm()
+    {
+        boxCustomer.setValue(null);
+        txtSubject.clear();
+        txtDescription.clear();
+        txtLocation.clear();
+        txtURL.clear();
+        txtContact.clear();
+        datePicker.setValue(null);
+        txtStartTime.clear();
+        txtAppointmentLength.clear();
+        lblApptId.setText("0");
     }
 
     private boolean fieldsAppointmentValidate()

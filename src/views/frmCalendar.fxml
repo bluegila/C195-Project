@@ -20,7 +20,7 @@
 
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1380.0" style="-fx-background-color: #f4f3f2;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CalendarViewControl">
    <children>
-      <GridPane fx:id="calWeek" layoutX="365.0" layoutY="125.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" style="-fx-background-color: #dce8e1; -fx-alignment: center; -fx-border-color: #799485; -fx-border-width: 2; -fx-border-insets: 1; -fx-grid-lines-visible: true;">
+      <GridPane fx:id="calWeek" layoutX="365.0" layoutY="125.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" style="-fx-background-color: #dce8e1; -fx-alignment: center; -fx-border-color: #799485; -fx-border-width: 2; -fx-border-insets: 1;">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="125.0" prefWidth="125.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="125.0" prefWidth="125.0" />
@@ -287,7 +287,7 @@
                               <Button layoutX="89.0" layoutY="340.0" mnemonicParsing="false" onAction="#addAppointment" text="OK">
                                <font><Font size="14.0" /></font>
                               </Button>
-                              <Button layoutX="200.0" layoutY="340.0" mnemonicParsing="false" text="Clear">
+                              <Button layoutX="200.0" layoutY="340.0" mnemonicParsing="false" onAction="#clearAppointment" text="Clear">
                                <font><Font size="14.0" /></font>
                               </Button>
 

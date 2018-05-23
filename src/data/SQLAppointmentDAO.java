@@ -45,8 +45,8 @@ public class SQLAppointmentDAO
             ZonedDateTime localEnd = zdtEnd.withZoneSameInstant(zid);
 
           //  ZonedDateTime tempLocalStart = ZonedDateTime.from(localStart);
-            long longDiffInMinutes = ChronoUnit.MINUTES.between(localStart, localEnd);
-            int appointmentLength = (int) longDiffInMinutes;
+         //   long longDiffInMinutes = ChronoUnit.MINUTES.between(localStart, localEnd);
+         //   int appointmentLength = (int) longDiffInMinutes;
 
             Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location, contact, url, localStart, localEnd);
 
