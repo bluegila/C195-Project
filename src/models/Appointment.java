@@ -66,8 +66,8 @@ public class Appointment
         this.location = location;
         this.url = url;
         this.contact = contact;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.sqlStartDateTime = sqlStartDateTime;
+        this.sqlEndDateTime = sqlEndDateTime;;
     }
 
     public Appointment(Contact objCustomer, String title, String description, String location, String url, String contact, Timestamp sqlStartDateTime, Timestamp sqlEndDateTime) {
@@ -81,7 +81,7 @@ public class Appointment
         this.sqlEndDateTime = sqlEndDateTime;
     }
 
-    public Appointment(int appointmentID, Contact objCustomer, String title, String description, String location, String url, String contact, ZonedDateTime startDate, ZonedDateTime endDate) {
+    public Appointment(int appointmentID, Contact objCustomer, String title, String description, String location, String url, String contact, Timestamp sqlStartDateTime, Timestamp sqlEndDateTime) {
         this.appointmentID = appointmentID;
         this.objCustomer = objCustomer;
         this.title = title;
@@ -89,7 +89,7 @@ public class Appointment
         this.location = location;
         this.url = url;
         this.contact = contact;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.sqlStartDateTime = sqlStartDateTime;
+        this.sqlEndDateTime = sqlEndDateTime;
     }
 }

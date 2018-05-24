@@ -126,26 +126,6 @@ public class CalendarViewControl implements Initializable
         } catch (SQLException e) {
             e.printStackTrace();
         }
-/*
-        try {
-            List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
-            for (int i = 1; i < FXCollections.observableArrayList(appointments).size();i++)
-            {
-                if appointments.get(i).getStartDate().minusDays(1).isAfter()
-                Button btnAppointment = new Button();
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } */
-       /* btnContactOK.setOnAction(e ->
-        {
-            Contact selectedContact = listContacts.getSelectionModel().getSelectedItem();
-            int tempCustomerID = selectedContact.getCustomerID();
-            lblCustomerID.setText(Integer.toString(tempCustomerID));
-            System.out.println(tempCustomerID);
-        }); */
-
     }
     //endregion
 
@@ -260,26 +240,26 @@ public class CalendarViewControl implements Initializable
         final double XLAYOUT_OFFSET = 300d;
         final double PX_PER_DAY = 125d;
         final double YLAYOUT_OFFSET = 490d;
-        TimeZone timezone = TimeZone.getTimeZone(ZoneId.systemDefault());
+     //   TimeZone timezone = TimeZone.getTimeZone(ZoneId.systemDefault());
 
         try {
             List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
             int comparator = FXCollections.observableArrayList(appointments).size();
             for (int j = 0; j <comparator; j++)
             {
-                ZonedDateTime localStartTime = appointments.get(j).getStartDate().toLocalDateTime().atZone(ZoneId.systemDefault());
+                final Appointment currentAppointment = appointments.get(j);
+                ZonedDateTime localStartTime = appointments.get(j).getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault());
                 double appointmentStart = (double) localStartTime.getHour() +
-                        (appointments.get(j).getStartDate().getMinute() / 60d);
-                double appointmentEnd = (double) appointments.get(j).getEndDate().getHour() +
-                        (appointments.get(j).getEndDate().getMinute() / 60d);
-                int appointmentDayofWeek = appointments.get(j).getStartDate().getDayOfWeek().getValue();
-
-
+                        (localStartTime.getMinute() / 60d);
+                ZonedDateTime localEndTime = appointments.get(j).getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault());
+                double appointmentEnd = (double) localEndTime.getHour() +
+                        (localEndTime.getMinute() / 60d);
+                int appointmentDayofWeek = localStartTime.getDayOfWeek().getValue();
                 double appointmentLength = appointmentEnd - appointmentStart;
                 final String cssButtonDefault =
                         "-fx-background-color: #c6b1b1;-fx-text-alignment:center;-fx-alignment:center;-fx-text-fill:#8b4d4e;-fx-font-size: 9pt; -fx-border-color: #8b4d4e; -fx-border-width: 2px; ";
 
-                if (appointments.get(j).getStartDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == calendarWeek.get(Calendar.WEEK_OF_YEAR))
+                if (localStartTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == calendarWeek.get(Calendar.WEEK_OF_YEAR))
                 {
                     Button btnAppointment = new Button(appointments.get(j).getObjCustomer().getCustomerName());
                     btnAppointment.setPrefWidth(125.0);
@@ -287,11 +267,13 @@ public class CalendarViewControl implements Initializable
                     btnAppointment.setLayoutX((appointmentStart - START_HOUR) * (PX_PER_HOUR) + XLAYOUT_OFFSET);
                     btnAppointment.setLayoutY((appointmentDayofWeek - 1d) * (PX_PER_DAY) + YLAYOUT_OFFSET);
                     btnAppointment.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+                    btnAppointment.setOnAction(event -> loadAppointment(currentAppointment));
                     int row = (int)((appointmentStart - START_HOUR) * 2) + 1;
                     int rowspan = (int)((appointmentLength) * 2);
                     calWeek.add(btnAppointment,(appointmentDayofWeek + 1),row,1,rowspan);
                     btnAppointment.setStyle(cssButtonDefault);
                     btnAppointment.toFront();
+                    btnAppointment.setCursor(Cursor.HAND);
                 }
 
             }
@@ -475,7 +457,23 @@ public class CalendarViewControl implements Initializable
        return false; //why do I need this?
     }
 
-    private void loadAppointments(){;} //TODO This Method
+    private void loadAppointment(Appointment appointment)
+    {
+        tabContacts.getSelectionModel().select(2);
+        boxCustomer.getSelectionModel().select(appointment.getObjCustomer());
+        txtSubject.setText(appointment.getTitle());
+        txtDescription.setText(appointment.getDescription());
+        txtLocation.setText(appointment.getLocation());
+        txtContact.setText(appointment.getContact());
+        txtURL.setText(appointment.getUrl());
+        datePicker.setValue(appointment.getSqlStartDateTime().toLocalDateTime().toLocalDate());
+        txtStartTime.setText(appointment.getSqlStartDateTime().toLocalDateTime().toLocalTime().toString());
+
+        long apptLengthMS = appointment.getSqlEndDateTime().getTime() - appointment.getSqlStartDateTime().getTime();
+        long apptLengthMins = apptLengthMS / 60000;
+        txtAppointmentLength.setText(Long.toString(apptLengthMins));
+        lblApptId.setText(Integer.toString(appointment.getAppointmentID()));
+    }
 
     @FXML
     private void addAppointment(ActionEvent actionEvent) throws IOException, SQLException

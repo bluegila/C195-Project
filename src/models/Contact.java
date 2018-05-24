@@ -6,7 +6,6 @@ public class Contact
     private String customerName;
     private Address objAddress;
     private boolean active;
-  //  private int address;
 
     public Contact(String customerID, String customerName, Address objAddress, boolean active)
     {
@@ -49,5 +48,11 @@ public class Contact
     public boolean getActive()
     {
         return active;
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        return other instanceof Contact && ((Contact)other).getCustomerID() == this.getCustomerID();
     }
 }

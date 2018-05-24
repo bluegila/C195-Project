@@ -1,6 +1,5 @@
 package controllers;
 
-import javafx.scene.control.Dialog;
 import models.User;
 import data.SQLUserDAO;
 import javafx.event.ActionEvent;
@@ -14,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 public class LoginControl
 {
@@ -81,9 +81,9 @@ public class LoginControl
     private void badLogon()
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bad Username or Password");
+        alert.setTitle(ResourceBundle.getBundle("login").getString("alertTitle"));
         alert.setHeaderText(null);
-        alert.setContentText("Please check you username and password and try again.");
+        alert.setContentText(ResourceBundle.getBundle("login").getString("alertContents"));
         alert.showAndWait();
     }
     public void cancel(ActionEvent actionEvent) throws IOException

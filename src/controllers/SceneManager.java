@@ -6,10 +6,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 
-
-public class SceneManager
+ public class SceneManager
 {
     private static Stage mainStage;
 
@@ -18,7 +18,7 @@ public class SceneManager
         mainStage = stage;
       //  mainStage.setTitle
         mainStage.setResizable(false);
-        Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmLogin.fxml"));
+        Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmLogin.fxml"), ResourceBundle.getBundle("login"));
         Scene loginScene = new Scene(root,300,200);
         mainStage.setScene(loginScene);
         mainStage.show();

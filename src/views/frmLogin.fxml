@@ -21,7 +21,7 @@
         <RowConstraints vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <TextField fx:id="txtUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Username" scaleShape="false" style="-fx-border-width: 0 0 2 0; -fx-border-color: transparent transparent #8b4d4e transparent; -fx-background-color: none;" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+        <TextField fx:id="txtUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="%username" scaleShape="false" style="-fx-border-width: 0 0 2 0; -fx-border-color: transparent transparent #8b4d4e transparent; -fx-background-color: none;" GridPane.columnSpan="2" GridPane.halignment="CENTER">
             <cursor>
                 <Cursor fx:constant="TEXT" />
             </cursor>
@@ -32,12 +32,12 @@
                 <Font name="Open Sans" size="12.0" />
             </font>
         </TextField>
-        <PasswordField fx:id="pwdPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Password" scaleShape="false" style="-fx-background-color: none; -fx-border-color: transparent transparent #8b4d4e transparent; -fx-border-width: 0 0 2 0;" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+        <PasswordField fx:id="pwdPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="%password" scaleShape="false" style="-fx-background-color: none; -fx-border-color: transparent transparent #8b4d4e transparent; -fx-border-width: 0 0 2 0;" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <cursor>
                 <Cursor fx:constant="TEXT" />
             </cursor>
         </PasswordField>
-        <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" onAction="#login" style="-fx-background-color: transparent;" text="Login" textAlignment="CENTER" textFill="#8b4d4e" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+        <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" onAction="#login" style="-fx-background-color: transparent;" text="%ok" textAlignment="CENTER" textFill="#8b4d4e" GridPane.halignment="CENTER" GridPane.rowIndex="2">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
@@ -45,7 +45,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
         </Button>
-        <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: transparent;" text="Cancel" textFill="#8b4d4e" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+        <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: transparent;" text="%cancel" textFill="#8b4d4e" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

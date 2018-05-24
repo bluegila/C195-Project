@@ -38,17 +38,17 @@ public class SQLAppointmentDAO
             Timestamp end = appointmentsRS.getTimestamp(8);
             String title = appointmentsRS.getString(9);
 
-            ZoneId zid = ZoneId.systemDefault();
-            ZonedDateTime zdtStart = start.toLocalDateTime().atZone(ZoneId.of("UTC"));
-            ZonedDateTime localStart = zdtStart.withZoneSameInstant(zid);
-            ZonedDateTime zdtEnd = end.toLocalDateTime().atZone((ZoneId.of("UTC")));
-            ZonedDateTime localEnd = zdtEnd.withZoneSameInstant(zid);
+//            ZoneId zid = ZoneId.systemDefault();
+//            ZonedDateTime zdtStart = start.toLocalDateTime().atZone(ZoneId.of("UTC"));
+//            ZonedDateTime localStart = zdtStart.withZoneSameInstant(zid);
+//            ZonedDateTime zdtEnd = end.toLocalDateTime().atZone((ZoneId.of("UTC")));
+//            ZonedDateTime localEnd = zdtEnd.withZoneSameInstant(zid);
 
           //  ZonedDateTime tempLocalStart = ZonedDateTime.from(localStart);
          //   long longDiffInMinutes = ChronoUnit.MINUTES.between(localStart, localEnd);
          //   int appointmentLength = (int) longDiffInMinutes;
 
-            Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location, contact, url, localStart, localEnd);
+            Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location, contact, url, start, end);
 
             appointments.add(appointment);
         }
