@@ -103,5 +103,36 @@ public class SQLAppointmentDAO
 
         appointmentInsertStmnt.execute();
     }
+    public void updateAppointment(Appointment oldAppointment) throws SQLException
+    {
+        int appointmentId = oldAppointment.getAppointmentID();
+        int customerId = oldAppointment.getObjCustomer().getCustomerID();
+        String subject = oldAppointment.getTitle();
+        String description = oldAppointment.getDescription();
+        String location = oldAppointment.getLocation();
+        String contact = oldAppointment.getContact();
+        String url = oldAppointment.getUrl();
+        Timestamp start = oldAppointment.getSqlStartDateTime();
+        Timestamp end = oldAppointment.getSqlEndDateTime();
+
+        String uname = LoginControl.getCurrentUser().toString();
+        Timestamp saveDate = new Timestamp(Calendar.getInstance().getTime().getTime());
+
+        PreparedStatement updateAppointmentStmnt = conn.prepareStatement
+                ("UPDATE appointment SET customerId = ?, title = ?, description = ?, location = ?, contact = ?, url = ?, start = ?, end = ?, lastUpdateBy = ?, lastUpdate = ? WHERE appointmentId = ?");
+        updateAppointmentStmnt.setInt(1, customerId);
+        updateAppointmentStmnt.setString(2,subject);
+        updateAppointmentStmnt.setString(3, description);
+        updateAppointmentStmnt.setString(4, location);
+        updateAppointmentStmnt.setString(5, contact);
+        updateAppointmentStmnt.setString(6, url);
+        updateAppointmentStmnt.setTimestamp(7, start);
+        updateAppointmentStmnt.setTimestamp(8, end);
+        updateAppointmentStmnt.setString(9, uname);
+        updateAppointmentStmnt.setTimestamp(10, saveDate);
+        updateAppointmentStmnt.setInt(11, appointmentId);
+
+        updateAppointmentStmnt.execute();
+    }
 
 }

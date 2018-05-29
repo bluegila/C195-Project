@@ -99,7 +99,7 @@ public class CalendarViewControl implements Initializable
     @FXML
     private TextField txtStartTime;
     @FXML
-    private TextField txtAppointmentLength;
+    private Slider txtAppointmentLength;
     @FXML
     private Label lblApptId;
  //endregion
@@ -150,7 +150,7 @@ public class CalendarViewControl implements Initializable
         int year = calendar.get(Calendar.YEAR);
 
         String strYear = Integer.toString(year);//set year
-        String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
 
         calendar.set(Calendar.WEEK_OF_MONTH, 1);
         calendar.set(Calendar.DAY_OF_WEEK,calendar.getFirstDayOfWeek());
@@ -193,6 +193,17 @@ public class CalendarViewControl implements Initializable
             {
                 String dateOfMonth = Integer.toString(calendar.get(Calendar.DATE));
                 Button dateButton = new Button(dateOfMonth);
+                List<Calendar> monthCalendarList = new ArrayList<>();
+                int listSize = monthCalendarList.size();
+
+                for(int i = 0; i < listSize; ++i){
+                    monthCalendarList.add(monthCalendar);
+              //  System.out.println((row * col + col));
+              //  monthCalendarList.add((row * col + col),monthCalendar);
+                System.out.println(monthCalendarList.get(listSize));
+                    System.out.println(listSize);}
+                System.out.println(listSize);
+                dateButton.setOnAction(event -> buildWeekView(monthCalendar));
                 dateButton.setPrefWidth(40.0);
                 calMonth.setStyle(cssCalLabel);
                 calYear.setStyle(cssCalLabel);
@@ -203,13 +214,14 @@ public class CalendarViewControl implements Initializable
                 dateButton.setStyle(cssButtonDefault);
                 calGrid.add(dateButton,col,row);
                 calendar.add(Calendar.DATE,1);
+
             }
         }
 
         for (int col = 0; col < 7; col++)
         {
             calendar.set(Calendar.DAY_OF_WEEK, col + 1);
-            String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.ENGLISH);
+            String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
             Label dayOfWeekLabel = new Label(dayOfWeek);
             dayOfWeekLabel.setPrefWidth(40.0);
             dayOfWeekLabel.setStyle(cssButtonDefault);
@@ -224,9 +236,6 @@ public class CalendarViewControl implements Initializable
         {
             e.printStackTrace();
         }
-
-
-
     }
     //endregion
 
@@ -470,8 +479,8 @@ public class CalendarViewControl implements Initializable
         txtStartTime.setText(appointment.getSqlStartDateTime().toLocalDateTime().toLocalTime().toString());
 
         long apptLengthMS = appointment.getSqlEndDateTime().getTime() - appointment.getSqlStartDateTime().getTime();
-        long apptLengthMins = apptLengthMS / 60000;
-        txtAppointmentLength.setText(Long.toString(apptLengthMins));
+        double apptLengthMins = apptLengthMS / 60000.0;
+        txtAppointmentLength.setValue(apptLengthMins/60);
         lblApptId.setText(Integer.toString(appointment.getAppointmentID()));
     }
 
@@ -487,12 +496,9 @@ public class CalendarViewControl implements Initializable
             String contact = txtContact.getText();
             LocalDate date = datePicker.getValue();
             String start = txtStartTime.getText();
-            int appointmentLength = 0;
-            try
-            {
-                appointmentLength = Integer.parseInt(txtAppointmentLength.getText());
-            }
-            catch(NumberFormatException ex)
+            double appointmentLength = txtAppointmentLength.getValue();
+
+            if (appointmentLength <= 0.0)
             {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Invalid Appointment Length");
@@ -504,7 +510,7 @@ public class CalendarViewControl implements Initializable
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
             LocalTime timePart = LocalTime.parse(start, timeFormatter);
             LocalDateTime startDateTime = LocalDateTime.of(date, timePart);
-            LocalDateTime endDateTime = startDateTime.plusMinutes(appointmentLength);
+            LocalDateTime endDateTime = startDateTime.plusMinutes((long)(appointmentLength*60));
             ZoneId zid = ZoneId.systemDefault();
             ZonedDateTime zonedStartDateTime = startDateTime.atZone(zid);
             ZonedDateTime zonedEndDateTime = endDateTime.atZone(zid);
@@ -524,8 +530,6 @@ public class CalendarViewControl implements Initializable
                     e.printStackTrace();
                 }
             }
-
-            /*
             else
             {
                 try {
@@ -534,7 +538,6 @@ public class CalendarViewControl implements Initializable
                     e.printStackTrace();
                 }
             }
-            */
         }
     }
 
@@ -542,6 +545,12 @@ public class CalendarViewControl implements Initializable
     private void clearAppointment(ActionEvent actionEvent) throws IOException, SQLException
     {
         clearAppointmentForm();
+    }
+
+    @FXML
+    private void deleteAppointment (ActionEvent actionEvent) throws IOException, SQLException
+    {
+        ;
     }
 
     private void clearAppointmentForm()
@@ -554,7 +563,7 @@ public class CalendarViewControl implements Initializable
         txtContact.clear();
         datePicker.setValue(null);
         txtStartTime.clear();
-        txtAppointmentLength.clear();
+        txtAppointmentLength.setValue(0);
         lblApptId.setText("0");
     }
 
@@ -566,7 +575,7 @@ public class CalendarViewControl implements Initializable
                 txtLocation.getText().trim().equals("") ||
                 datePicker.getValue() == null ||
                 txtStartTime.getText().trim().equals("") ||
-                txtAppointmentLength.getText().trim().equals(""))
+                txtAppointmentLength.getValue() == 0)
         {
             alertMissingInformation();
         }
@@ -592,6 +601,4 @@ public class CalendarViewControl implements Initializable
         //    .ifPresent(response -> formatSystem());
        // return false;
     }
-
-
 }
