@@ -203,7 +203,8 @@ public class CalendarViewControl implements Initializable
                 System.out.println(monthCalendarList.get(listSize));
                     System.out.println(listSize);}
                 System.out.println(listSize);
-                dateButton.setOnAction(event -> buildWeekView(monthCalendar));
+                final Calendar date = (Calendar)calendar.clone();
+                dateButton.setOnAction(event -> buildWeekView(date));
                 dateButton.setPrefWidth(40.0);
                 calMonth.setStyle(cssCalLabel);
                 calYear.setStyle(cssCalLabel);
