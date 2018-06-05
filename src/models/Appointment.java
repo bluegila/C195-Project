@@ -68,4 +68,8 @@ public class Appointment
         this.sqlStartDateTime = sqlStartDateTime;
         this.sqlEndDateTime = sqlEndDateTime;
     }
+
+    public  Appointment(int appointmentID){
+        this.appointmentID = appointmentID;
+    }
 }

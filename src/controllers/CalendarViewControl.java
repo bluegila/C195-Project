@@ -2,8 +2,6 @@ package controllers;
 
 //region Imports
 import data.SQLAppointmentDAO;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import models.*;
 import data.SQLContactDAO;
@@ -20,6 +18,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
@@ -103,11 +102,22 @@ public class CalendarViewControl implements Initializable
     @FXML
     private Label lblApptId;
  //endregion
-
+    private List<Appointment> appointments;
     //region @init
     @Override
     public void initialize(URL location, ResourceBundle resources) //from Initializable
     {
+        try {
+            appointments = SQLAppointmentDAO.selectAppointment();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        for (Appointment appointment : appointments)
+//        {
+//            Timer.addAppointmentTimer(appointment);
+//        }
+
         buildWeekView(Calendar.getInstance());
         buildMonthView(Calendar.getInstance());
         lblCustomerID.setText("0");
@@ -198,9 +208,9 @@ public class CalendarViewControl implements Initializable
 
                 for(int i = 0; i < listSize; ++i){
                     monthCalendarList.add(monthCalendar);
-              //  System.out.println((row * col + col));
-              //  monthCalendarList.add((row * col + col),monthCalendar);
-                System.out.println(monthCalendarList.get(listSize));
+                    //  System.out.println((row * col + col));
+                    //  monthCalendarList.add((row * col + col),monthCalendar);
+                    System.out.println(monthCalendarList.get(listSize));
                     System.out.println(listSize);}
                 System.out.println(listSize);
                 final Calendar date = (Calendar)calendar.clone();
@@ -219,25 +229,17 @@ public class CalendarViewControl implements Initializable
             }
         }
 
-        for (int col = 0; col < 7; col++)
-        {
-            calendar.set(Calendar.DAY_OF_WEEK, col + 1);
-            String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
-            Label dayOfWeekLabel = new Label(dayOfWeek);
-            dayOfWeekLabel.setPrefWidth(40.0);
-            dayOfWeekLabel.setStyle(cssButtonDefault);
-            calDaysMonth.add(dayOfWeekLabel,col,0);
+
+            for (int col = 0; col < 7; col++) {
+                calendar.set(Calendar.DAY_OF_WEEK, col + 1);
+                String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+                Label dayOfWeekLabel = new Label(dayOfWeek);
+                dayOfWeekLabel.setPrefWidth(40.0);
+                dayOfWeekLabel.setStyle(cssButtonDefault);
+                calDaysMonth.add(dayOfWeekLabel, col, 0);
+            }
         }
 
-        try
-        {
-            List<Appointment> selectAllAppointmentsSelectedWeek = SQLAppointmentDAO.selectAppointment();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
     //endregion
 
     private void buildWeekView(Calendar calendar)
@@ -250,10 +252,7 @@ public class CalendarViewControl implements Initializable
         final double XLAYOUT_OFFSET = 300d;
         final double PX_PER_DAY = 125d;
         final double YLAYOUT_OFFSET = 490d;
-     //   TimeZone timezone = TimeZone.getTimeZone(ZoneId.systemDefault());
 
-        try {
-            List<Appointment> appointments = SQLAppointmentDAO.selectAppointment();
             int comparator = FXCollections.observableArrayList(appointments).size();
             for (int j = 0; j <comparator; j++)
             {
@@ -285,11 +284,7 @@ public class CalendarViewControl implements Initializable
                     btnAppointment.toFront();
                     btnAppointment.setCursor(Cursor.HAND);
                 }
-
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         for (int row = 1; row < 30; row++)
         {
@@ -477,8 +472,10 @@ public class CalendarViewControl implements Initializable
         txtContact.setText(appointment.getContact());
         txtURL.setText(appointment.getUrl());
         datePicker.setValue(appointment.getSqlStartDateTime().toLocalDateTime().toLocalDate());
-        txtStartTime.setText(appointment.getSqlStartDateTime().toLocalDateTime().toLocalTime().toString());
-
+        ZonedDateTime zdtStartTime = appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault());
+        Date startTime = Date.from(zdtStartTime.toInstant());
+        SimpleDateFormat formattedStartTime = new SimpleDateFormat("h:mm a");
+        txtStartTime.setText(formattedStartTime.format(startTime));
         long apptLengthMS = appointment.getSqlEndDateTime().getTime() - appointment.getSqlStartDateTime().getTime();
         double apptLengthMins = apptLengthMS / 60000.0;
         txtAppointmentLength.setValue(apptLengthMins/60);
@@ -498,6 +495,7 @@ public class CalendarViewControl implements Initializable
             LocalDate date = datePicker.getValue();
             String start = txtStartTime.getText();
             double appointmentLength = txtAppointmentLength.getValue();
+            int appointmentId = Integer.parseInt(lblApptId.getText());
 
             if (appointmentLength <= 0.0)
             {
@@ -520,25 +518,42 @@ public class CalendarViewControl implements Initializable
             SQLAppointmentDAO appointmentSQL = new SQLAppointmentDAO();
 
             Appointment appointment = new Appointment(customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
+            Appointment appointment2 = new Appointment(appointmentId, customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
 
             if (lblApptId.getText().equals("0"))
             {
                 try {
                     appointmentSQL.insertAppointment(appointment);
-                    buildWeekView(Calendar.getInstance());
-                    clearAppointmentForm();
+                    appointments.add(appointment);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
+
             else
             {
                 try {
-                    appointmentSQL.updateAppointment(appointment);
+                    appointmentSQL.updateAppointment(appointment2);
+
+                    for(int i = 0; i < appointments.size(); i++)
+                    {
+                        if (appointments.get(i).getAppointmentID() == appointment2.getAppointmentID())
+                        {
+                            appointments.set(i, appointment2);
+                        }
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
+            try {
+                appointments = SQLAppointmentDAO.selectAppointment();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            calWeek.getChildren().clear();
+            buildWeekView(Calendar.getInstance());
+            clearAppointmentForm();
         }
     }
 
@@ -551,7 +566,23 @@ public class CalendarViewControl implements Initializable
     @FXML
     private void deleteAppointment (ActionEvent actionEvent) throws IOException, SQLException
     {
-        ;
+        int appointmentId = Integer.parseInt(lblApptId.getText());
+        Appointment oldAppointment = new Appointment(appointmentId);
+
+        SQLAppointmentDAO appointmentSQL = new SQLAppointmentDAO();
+        try {
+            appointmentSQL.deleteAppointment(oldAppointment);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            appointments = SQLAppointmentDAO.selectAppointment();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        clearAppointmentForm();
+        buildWeekView(Calendar.getInstance());
     }
 
     private void clearAppointmentForm()
@@ -579,6 +610,7 @@ public class CalendarViewControl implements Initializable
                 txtAppointmentLength.getValue() == 0)
         {
             alertMissingInformation();
+            return false;
         }
         else
         {
@@ -587,8 +619,10 @@ public class CalendarViewControl implements Initializable
             if (timeValidation.timeValidate(time)){
                 return true;
             }
+            else
+                alertBadTimeFormat();
+                return false;
         }
-        return false; //why do I need this?
     }
 
     private void alertMissingInformation()
@@ -598,8 +632,14 @@ public class CalendarViewControl implements Initializable
         alert.setHeaderText(null);
         alert.setContentText("At least one field is empty.  Please check the input fields and try to Save again.");
         alert.showAndWait();
-        //      .filter(response -> response == ButtonType.OK)
-        //    .ifPresent(response -> formatSystem());
-       // return false;
+    }
+
+    private void alertBadTimeFormat()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Invalid Time Format");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter a start time in the following format: hh:mm AM/PM.");
+        alert.showAndWait();
     }
 }

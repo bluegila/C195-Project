@@ -5,9 +5,6 @@ import models.Appointment;
 import models.Contact;
 
 import java.sql.*;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,17 +35,7 @@ public class SQLAppointmentDAO
             Timestamp end = appointmentsRS.getTimestamp(8);
             String title = appointmentsRS.getString(9);
 
-//            ZoneId zid = ZoneId.systemDefault();
-//            ZonedDateTime zdtStart = start.toLocalDateTime().atZone(ZoneId.of("UTC"));
-//            ZonedDateTime localStart = zdtStart.withZoneSameInstant(zid);
-//            ZonedDateTime zdtEnd = end.toLocalDateTime().atZone((ZoneId.of("UTC")));
-//            ZonedDateTime localEnd = zdtEnd.withZoneSameInstant(zid);
-
-          //  ZonedDateTime tempLocalStart = ZonedDateTime.from(localStart);
-         //   long longDiffInMinutes = ChronoUnit.MINUTES.between(localStart, localEnd);
-         //   int appointmentLength = (int) longDiffInMinutes;
-
-            Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location, contact, url, start, end);
+            Appointment appointment = new Appointment(appointmentId, objCustomer, title, description, location,  url, contact, start, end);
 
             appointments.add(appointment);
         }
@@ -103,6 +90,7 @@ public class SQLAppointmentDAO
 
         appointmentInsertStmnt.execute();
     }
+
     public void updateAppointment(Appointment oldAppointment) throws SQLException
     {
         int appointmentId = oldAppointment.getAppointmentID();
@@ -134,5 +122,12 @@ public class SQLAppointmentDAO
 
         updateAppointmentStmnt.execute();
     }
+    public void deleteAppointment(Appointment oldAppointment) throws SQLException
+    {
+        int appointmentId = oldAppointment.getAppointmentID();
 
+        PreparedStatement deleteAppointmentStmt = conn.prepareStatement
+                ("DELETE FROM appointment WHERE appointmentId = ?");
+        deleteAppointmentStmt.setInt(1,appointmentId);
+    }
 }

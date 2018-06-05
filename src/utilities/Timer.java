@@ -6,9 +6,9 @@
 //
 //public class Timer
 //{
-//    private static void appointmentTimer(Appointment appointment)
+//    private static void addAppointmentTimer(Appointment appointment)
 //    {
-//        if (appointment.getSqlStartDateTime().  (ZonedDateTime.now()))
+//        if (appointment.getSqlStartDateTime().isAfter(ZonedDateTime.now()))
 //        {
 //            long timeDistance = appointment.getSqlStartDateTime().toEpochSecond() - ZonedDateTime.now().toEpochSecond();
 //            long delay = timeDistance - (15 * 60);
