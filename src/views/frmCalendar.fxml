@@ -137,7 +137,7 @@
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <ListView fx:id="listContacts" layoutX="22.0" layoutY="33.0" prefHeight="274.0" prefWidth="280.0" />
-                              <Button fx:id="btnContactOK" layoutX="141.0" layoutY="347.0" mnemonicParsing="false" onAction="#loadContact" text="OK">
+                              <Button fx:id="btnSelectContactOK" layoutX="141.0" layoutY="347.0" mnemonicParsing="false" onAction="#loadContact" text="OK">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -219,7 +219,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="btnContactOK" layoutX="88.0" layoutY="355.0" mnemonicParsing="false" onAction="#saveContact" text="OK">
+                              <Button fx:id="btnEditContactOK" layoutX="88.0" layoutY="355.0" mnemonicParsing="false" onAction="#saveContact" text="OK">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -285,19 +285,14 @@
                               <Label layoutX="4.0" layoutY="299.0" text="Appt. Length*" wrapText="true">
                                <font><Font size="14.0" /></font>
                               </Label>
-                              <Button layoutX="88.0" layoutY="340.0" mnemonicParsing="false" onAction="#addAppointment" text="OK">
-                               <font><Font size="14.0" /></font>
-                              </Button>
-                              <Button layoutX="210.0" layoutY="340.0" mnemonicParsing="false" onAction="#clearAppointment" text="Clear">
-                               <font><Font size="14.0" /></font>
-                              </Button>
 
+                               <TextField fx:id="txtURL" layoutX="88.0" layoutY="197.0" prefHeight="30.0" prefWidth="175.0" />
                               <DatePicker fx:id="datePicker" layoutX="88.0" layoutY="229.0" prefHeight="30.0" prefWidth="175.0" />
                                <!--CSS for font on DatePicker and ChoiceBox -->
                             <Label layoutX="5.0" layoutY="267.0" text="Start Time*">
                                <font><Font size="14.0" /></font>
                             </Label>
-                              <TextField fx:id="txtURL" layoutX="88.0" layoutY="197.0" prefHeight="30.0" prefWidth="175.0" />
+
                               <Label fx:id="lblApptId" layoutX="16.0" layoutY="14.0" text="ApptId" />
                               <TextField fx:id="txtStartTime" layoutX="88.0" layoutY="261.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="175.0" />
                               <Label layoutX="270.0" layoutY="298.0" text="(hours)">
@@ -305,17 +300,32 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Button layoutX="138.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteAppointment" text="Delete">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
+
                               <Slider fx:id="txtAppointmentLength" blockIncrement="0.5" layoutX="95.0" layoutY="298.0" majorTickUnit="1.0" max="8.0" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="1" prefHeight="37.0" prefWidth="161.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                       </children></AnchorPane>
+                               <Button layoutX="88.0" layoutY="340.0" mnemonicParsing="false" onAction="#addAppointment" text="OK">
+                                   <font><Font size="14.0" /></font>
+                               </Button>
+                               <Button layoutX="138.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteAppointment" text="Delete">
+                                   <font>
+                                       <Font size="14.0" />
+                                   </font>
+                               </Button>
+                               <Button layoutX="210.0" layoutY="340.0" mnemonicParsing="false" onAction="#clearAppointment" text="Clear">
+                                   <font><Font size="14.0" /></font>
+                               </Button>
+                           </children></AnchorPane>
                 </content>
               </Tab>
           </tabs>
         </TabPane>
      </children></Pane>
+      <Label fx:id="lblCalendarMonthYear" alignment="CENTER" layoutX="380.0" layoutY="30.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="980.0" textAlignment="CENTER" textOverrun="CLIP">
+         <font>
+            <Font name="System Bold" size="48.0" />
+         </font>
+      </Label>
+      <Label layoutX="55.0" layoutY="31.0" text="Reports" />
+      <ChoiceBox fx:id="boxReports" layoutX="118.0" layoutY="28.0" prefHeight="25.0" prefWidth="178.0" />
+
 </children>
 </Pane>

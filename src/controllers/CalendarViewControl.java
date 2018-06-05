@@ -26,8 +26,6 @@ import java.util.*;
 
 import javafx.event.ActionEvent;
 import utilities.TimeValidation;
-
-
 //endregion
 
 //region @FXML
@@ -101,6 +99,10 @@ public class CalendarViewControl implements Initializable
     private Slider txtAppointmentLength;
     @FXML
     private Label lblApptId;
+    @FXML
+    private Label lblCalendarMonthYear;
+    @FXML
+    private ChoiceBox<Report.Reports> boxReports;
  //endregion
     private List<Appointment> appointments;
     //region @init
@@ -120,6 +122,10 @@ public class CalendarViewControl implements Initializable
 
         buildWeekView(Calendar.getInstance());
         buildMonthView(Calendar.getInstance());
+
+        boxReports = new ChoiceBox<>();
+        boxReports.getItems().setAll(Report.Reports.values());
+
         lblCustomerID.setText("0");
         lblApptId.setText("0");
         try {
@@ -139,12 +145,6 @@ public class CalendarViewControl implements Initializable
     }
     //endregion
 
-    public void onTodayClick() //TODO This Method
-    {
-        buildWeekView(Calendar.getInstance());
-        buildMonthView(Calendar.getInstance());
-    }
-
     private void onMonthClick(Calendar calendar,int monthDiff)
     {
         calendar.add(Calendar.MONTH,monthDiff);
@@ -161,6 +161,8 @@ public class CalendarViewControl implements Initializable
 
         String strYear = Integer.toString(year);//set year
         String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+        lblCalendarMonthYear.setText(strMonth + ' ' + strYear);
 
         calendar.set(Calendar.WEEK_OF_MONTH, 1);
         calendar.set(Calendar.DAY_OF_WEEK,calendar.getFirstDayOfWeek());
@@ -208,11 +210,8 @@ public class CalendarViewControl implements Initializable
 
                 for(int i = 0; i < listSize; ++i){
                     monthCalendarList.add(monthCalendar);
-                    //  System.out.println((row * col + col));
-                    //  monthCalendarList.add((row * col + col),monthCalendar);
                     System.out.println(monthCalendarList.get(listSize));
                     System.out.println(listSize);}
-                System.out.println(listSize);
                 final Calendar date = (Calendar)calendar.clone();
                 dateButton.setOnAction(event -> buildWeekView(date));
                 dateButton.setPrefWidth(40.0);
@@ -239,7 +238,6 @@ public class CalendarViewControl implements Initializable
                 calDaysMonth.add(dayOfWeekLabel, col, 0);
             }
         }
-
     //endregion
 
     private void buildWeekView(Calendar calendar)
