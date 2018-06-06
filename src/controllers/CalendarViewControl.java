@@ -26,6 +26,7 @@ import java.util.*;
 
 import javafx.event.ActionEvent;
 import utilities.TimeValidation;
+
 //endregion
 
 //region @FXML
@@ -115,10 +116,10 @@ public class CalendarViewControl implements Initializable
             e.printStackTrace();
         }
 
-//        for (Appointment appointment : appointments)
-//        {
-//            Timer.addAppointmentTimer(appointment);
-//        }
+        for (Appointment appointment : appointments)
+        {
+            utilities.Timer.addAppointmentTimer(appointment);
+        }
 
         buildWeekView(Calendar.getInstance());
         buildMonthView(Calendar.getInstance());
