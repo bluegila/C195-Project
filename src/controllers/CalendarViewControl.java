@@ -510,16 +510,18 @@ public class CalendarViewControl implements Initializable
             Appointment appointment = new Appointment(customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
             Appointment appointment2 = new Appointment(appointmentId, customer, subject, description, location, url, contact, sqlStartDateTime, sqlEndDateTime);
 
+            Calendar c = Calendar.getInstance();
+            c.setTime(appointment.getSqlStartDateTime());
+            int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
             if (lblApptId.getText().equals("0"))
             {
                 int appointmentTimeOverlap = -1;
-                for(int i = 1; i < appointments.size(); i++)
-                {
-                    if(appointment.getSqlStartDateTime().after(appointments.get(i).getSqlStartDateTime()) && appointment.getSqlEndDateTime().before(appointments.get(i).getSqlEndDateTime()))
-                    {
+                for(int i = 1; i < appointments.size(); i++) {
+                    if (appointment.getSqlStartDateTime().after(appointments.get(i).getSqlStartDateTime()) && appointment.getSqlEndDateTime().before(appointments.get(i).getSqlEndDateTime())) {
                         appointmentTimeOverlap = i;
                         break;
                     }
+                }
                     if(appointmentTimeOverlap >= 0)
                     {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -529,6 +531,31 @@ public class CalendarViewControl implements Initializable
                         alert.showAndWait();
 
                     }
+
+                    else if(dayOfWeek == 1 || dayOfWeek == 7)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Weekend");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please schedule your appointment on a Weekday. Saturdays and Sundays are outside business hours.");
+                        alert.showAndWait();
+                    }
+                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).getHour() < 8)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Scheduling too early");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please schedule your appointment no earlier than 8:00 AM.  Appointments before 8:00 AM are outsude business hours");
+                        alert.showAndWait();
+                    }
+                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).getHour() > 17)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Scheduling too late");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Please schedule your appointment no later than 5:00 PM.  Appointments after 5:00 PM are outsude business hours");
+                        alert.showAndWait();
+                    }
                     else
                         try {
                             appointmentSQL.insertAppointment(appointment);
@@ -536,7 +563,7 @@ public class CalendarViewControl implements Initializable
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-                }
+
             }
 
             else
