@@ -135,7 +135,6 @@ public class CalendarViewControl implements Initializable
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         try {
             List<Contact> contacts = SQLContactDAO.selectContact();
             listContacts.setItems(FXCollections.observableArrayList(contacts));
@@ -458,7 +457,7 @@ public class CalendarViewControl implements Initializable
             alertMissingInformation();
         }
         else return true;
-       return false; //why do I need this?
+        return false;
     }
 
     private void loadAppointment(Appointment appointment)
@@ -484,6 +483,7 @@ public class CalendarViewControl implements Initializable
     @FXML
     private void addAppointment(ActionEvent actionEvent) throws IOException, SQLException
     {
+        appointments = SQLAppointmentDAO.selectAppointment();
         if (fieldsAppointmentValidate()) {
             Contact customer = boxCustomer.getSelectionModel().getSelectedItem();
             String subject = txtSubject.getText();
@@ -495,15 +495,6 @@ public class CalendarViewControl implements Initializable
             String start = txtStartTime.getText();
             double appointmentLength = txtAppointmentLength.getValue();
             int appointmentId = Integer.parseInt(lblApptId.getText());
-
-            if (appointmentLength <= 0.0)
-            {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Invalid Appointment Length");
-                alert.setHeaderText(null);
-                alert.setContentText("Please enter a valid appointment Length");
-                alert.showAndWait();
-            }
 
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
             LocalTime timePart = LocalTime.parse(start, timeFormatter);
@@ -521,11 +512,30 @@ public class CalendarViewControl implements Initializable
 
             if (lblApptId.getText().equals("0"))
             {
-                try {
-                    appointmentSQL.insertAppointment(appointment);
-                    appointments.add(appointment);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                int appointmentTimeOverlap = -1;
+                for(int i = 1; i < appointments.size(); i++)
+                {
+                    if(appointment.getSqlStartDateTime().after(appointments.get(i).getSqlStartDateTime()) && appointment.getSqlEndDateTime().before(appointments.get(i).getSqlEndDateTime()))
+                    {
+                        appointmentTimeOverlap = i;
+                        break;
+                    }
+                    if(appointmentTimeOverlap >= 0)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Overlapping Appointments");
+                        alert.setHeaderText(null);
+                        alert.setContentText("You new appointment overlaps an existing appointment.  Please choose another time or edit the existng appointment.");
+                        alert.showAndWait();
+
+                    }
+                    else
+                        try {
+                            appointmentSQL.insertAppointment(appointment);
+                            appointments.add(appointment);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                 }
             }
 
