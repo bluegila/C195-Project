@@ -513,10 +513,10 @@ public class CalendarViewControl implements Initializable
             Calendar c = Calendar.getInstance();
             c.setTime(appointment.getSqlStartDateTime());
             int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-            if (lblApptId.getText().equals("0"))
-            {
+
                 int appointmentTimeOverlap = -1;
-                for(int i = 1; i < appointments.size(); i++) {
+                for(int i = 1; i < appointments.size(); i++)
+                {
                     if (appointment.getSqlStartDateTime().after(appointments.get(i).getSqlStartDateTime()) && appointment.getSqlEndDateTime().before(appointments.get(i).getSqlEndDateTime())) {
                         appointmentTimeOverlap = i;
                         break;
@@ -529,9 +529,7 @@ public class CalendarViewControl implements Initializable
                         alert.setHeaderText(null);
                         alert.setContentText("You new appointment overlaps an existing appointment.  Please choose another time or edit the existng appointment.");
                         alert.showAndWait();
-
                     }
-
                     else if(dayOfWeek == 1 || dayOfWeek == 7)
                     {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -545,7 +543,7 @@ public class CalendarViewControl implements Initializable
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Scheduling too early");
                         alert.setHeaderText(null);
-                        alert.setContentText("Please schedule your appointment no earlier than 8:00 AM.  Appointments before 8:00 AM are outsude business hours");
+                        alert.setContentText("Please schedule your appointment no earlier than 8:00 AM.  Appointments before 8:00 AM are outside business hours");
                         alert.showAndWait();
                     }
                     else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).getHour() > 17)
@@ -553,35 +551,34 @@ public class CalendarViewControl implements Initializable
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Scheduling too late");
                         alert.setHeaderText(null);
-                        alert.setContentText("Please schedule your appointment no later than 5:00 PM.  Appointments after 5:00 PM are outsude business hours");
+                        alert.setContentText("Please schedule your appointment no later than 5:00 PM.  Appointments after 5:00 PM are outside business hours");
                         alert.showAndWait();
                     }
-                    else
+                    else if (lblApptId.getText().equals("0"))
+                    {
                         try {
                             appointmentSQL.insertAppointment(appointment);
                             appointments.add(appointment);
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-
-            }
-
-            else
-            {
-                try {
-                    appointmentSQL.updateAppointment(appointment2);
-
-                    for(int i = 0; i < appointments.size(); i++)
-                    {
-                        if (appointments.get(i).getAppointmentID() == appointment2.getAppointmentID())
-                        {
-                            appointments.set(i, appointment2);
-                        }
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+                    else
+                    {
+                         try {
+                                 appointmentSQL.updateAppointment(appointment2);
+
+                                 for(int i = 0; i < appointments.size(); i++)
+                                 {
+                                     if (appointments.get(i).getAppointmentID() == appointment2.getAppointmentID())
+                                    {
+                                        appointments.set(i, appointment2);
+                                    }
+                                 }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                    }
             try {
                 appointments = SQLAppointmentDAO.selectAppointment();
             } catch (SQLException e) {
