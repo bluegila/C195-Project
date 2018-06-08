@@ -18,5 +18,10 @@ public class Report {
         {
             return reportName;
         }
+        @Override
+        public String toString()
+        {
+            return getReportName();
+        }
     }
 }

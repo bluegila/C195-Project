@@ -76,14 +76,14 @@ public class CalendarViewControl implements Initializable
     private CheckBox boxActive;
     @FXML
     private ListView<Contact> listContacts;
-    @FXML
-    private Button btnContactOK;
+//    @FXML
+//    private Button btnContactOK;
     @FXML
     private TabPane tabContacts;
     @FXML
     private ChoiceBox<Contact> boxCustomer;
     @FXML
-    private TextField txtSubject;
+    private ChoiceBox<ScheduleType.ScheduleTypes> boxSubject;
     @FXML
     private TextField txtDescription;
     @FXML
@@ -124,8 +124,8 @@ public class CalendarViewControl implements Initializable
         buildWeekView(Calendar.getInstance());
         buildMonthView(Calendar.getInstance());
 
-        boxReports = new ChoiceBox<>();
-        boxReports.getItems().setAll(Report.Reports.values());
+        boxReports.getItems().addAll(Report.Reports.values());
+        boxSubject.getItems().addAll(ScheduleType.ScheduleTypes.values());
 
         lblCustomerID.setText("0");
         lblApptId.setText("0");
@@ -464,7 +464,7 @@ public class CalendarViewControl implements Initializable
     {
         tabContacts.getSelectionModel().select(2);
         boxCustomer.getSelectionModel().select(appointment.getObjCustomer());
-        txtSubject.setText(appointment.getTitle());
+        boxSubject.getSelectionModel().select(appointment.getTitle());
         txtDescription.setText(appointment.getDescription());
         txtLocation.setText(appointment.getLocation());
         txtContact.setText(appointment.getContact());
@@ -486,7 +486,7 @@ public class CalendarViewControl implements Initializable
         appointments = SQLAppointmentDAO.selectAppointment();
         if (fieldsAppointmentValidate()) {
             Contact customer = boxCustomer.getSelectionModel().getSelectedItem();
-            String subject = txtSubject.getText();
+            String subject = boxSubject.getSelectionModel().getSelectedItem().getScheduleTypeName();
             String description = txtDescription.getText();
             String location = txtLocation.getText();
             String url = txtURL.getText();
@@ -538,7 +538,7 @@ public class CalendarViewControl implements Initializable
                         alert.setContentText("Please schedule your appointment on a Weekday. Saturdays and Sundays are outside business hours.");
                         alert.showAndWait();
                     }
-                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).getHour() < 8)
+                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getHour() < 8)
                     {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Scheduling too early");
@@ -546,12 +546,23 @@ public class CalendarViewControl implements Initializable
                         alert.setContentText("Please schedule your appointment no earlier than 8:00 AM.  Appointments before 8:00 AM are outside business hours");
                         alert.showAndWait();
                     }
-                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).getHour() > 17)
+                    else if(appointment.getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getHour() > 17)
                     {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Scheduling too late");
                         alert.setHeaderText(null);
                         alert.setContentText("Please schedule your appointment no later than 5:00 PM.  Appointments after 5:00 PM are outside business hours");
+                        alert.showAndWait();
+                    }
+                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 0 ||
+                            appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 30 ||
+                            appointment.getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 0 ||
+                            appointment.getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 30 )
+                    {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Correct the minutes");
+                        alert.setHeaderText(null);
+                        alert.setContentText("You are only allowed to enter the start and end time minutes on the hour or half hour (ie :00 or :30).");
                         alert.showAndWait();
                     }
                     else if (lblApptId.getText().equals("0"))
@@ -621,7 +632,7 @@ public class CalendarViewControl implements Initializable
     private void clearAppointmentForm()
     {
         boxCustomer.setValue(null);
-        txtSubject.clear();
+        boxSubject.setValue(null);
         txtDescription.clear();
         txtLocation.clear();
         txtURL.clear();
@@ -635,7 +646,7 @@ public class CalendarViewControl implements Initializable
     private boolean fieldsAppointmentValidate()
     {
         if (boxCustomer.getSelectionModel().getSelectedItem() == null ||
-                txtSubject.getText().trim().equals("") ||
+                boxSubject.getSelectionModel().getSelectedItem() == null ||
                 txtDescription.getText().trim().equals("") ||
                 txtLocation.getText().trim().equals("") ||
                 datePicker.getValue() == null ||

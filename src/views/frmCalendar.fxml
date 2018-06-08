@@ -245,12 +245,9 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                                <ChoiceBox fx:id="boxCustomer" layoutX="88.0" layoutY="37.0" prefHeight="30.0" prefWidth="175.0" />
-                               <TextField fx:id="txtSubject" layoutX="88.0" layoutY="69.0" prefHeight="30.0" prefWidth="175.0">
-                               <font>
-                                   <Font size="14.0" />
-                               </font>
-                               </TextField>
-                              <TextField fx:id="txtDescription" layoutX="88.0" layoutY="101.0" prefHeight="30.0" prefWidth="175.0">
+                               <ChoiceBox fx:id="boxSubject" layoutX="88.0" layoutY="69.0" prefHeight="30.0" prefWidth="175.0" />
+
+                               <TextField fx:id="txtDescription" layoutX="88.0" layoutY="101.0" prefHeight="30.0" prefWidth="175.0">
                                   <font>
                                       <Font size="14.0" />
                                   </font>
@@ -301,7 +298,7 @@
                                  </font>
                               </Label>
 
-                              <Slider fx:id="txtAppointmentLength" blockIncrement="0.5" layoutX="95.0" layoutY="298.0" majorTickUnit="1.0" max="8.0" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="1" prefHeight="37.0" prefWidth="161.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                              <Slider fx:id="txtAppointmentLength" blockIncrement="0.5" layoutX="95.0" layoutY="298.0" majorTickUnit="1.0" max="1.0" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="1" prefHeight="37.0" prefWidth="161.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
                                <Button layoutX="88.0" layoutY="340.0" mnemonicParsing="false" onAction="#addAppointment" text="OK">
                                    <font><Font size="14.0" /></font>
                                </Button>
