@@ -30,5 +30,13 @@ public class ScheduleType
         {
             return getScheduleTypeName();
         }
+
+//        public static int getScheduleTypeId()
+//        {
+//            int scheduleTypeId;
+//            scheduleTypeId =  ScheduleTypes.valueOf(getTitle()).ordinal();
+//
+//            return scheduleTypeId;
+//        }
     }
 }

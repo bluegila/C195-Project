@@ -464,7 +464,14 @@ public class CalendarViewControl implements Initializable
     {
         tabContacts.getSelectionModel().select(2);
         boxCustomer.getSelectionModel().select(appointment.getObjCustomer());
-        boxSubject.getSelectionModel().select(appointment.getTitle());
+        int scheduleTypeInt = 0;
+        if (appointment.getTitle().equals("Performing Systems Analysis"))  {scheduleTypeInt = 1;}
+        if (appointment.getTitle().equals("Review of Work Progress"))  {scheduleTypeInt = 2;}
+        if (appointment.getTitle().equals("Testing"))  {scheduleTypeInt = 3;}
+        if (appointment.getTitle().equals("Over the Phone Consultation"))  {scheduleTypeInt = 4;}
+        if (appointment.getTitle().equals("Meeting with Project Stakeholders"))  {scheduleTypeInt = 5;}
+        if (appointment.getTitle().equals("Project Wrap Up"))  {scheduleTypeInt = 6;}
+        boxSubject.getSelectionModel().select(scheduleTypeInt);
         txtDescription.setText(appointment.getDescription());
         txtLocation.setText(appointment.getLocation());
         txtContact.setText(appointment.getContact());
@@ -554,11 +561,13 @@ public class CalendarViewControl implements Initializable
                         alert.setContentText("Please schedule your appointment no later than 5:00 PM.  Appointments after 5:00 PM are outside business hours");
                         alert.showAndWait();
                     }
-                    else if(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 0 ||
-                            appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 30 ||
-                            appointment.getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 0 ||
-                            appointment.getSqlEndDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 30 )
+                    else if(timePart.getMinute() != 0 && timePart.getMinute() != 30 &&
+                            appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 0 &&
+                            appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute() != 30
+                            )
                     {
+                        System.out.println(timePart.getMinute());
+                        System.out.println(appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.systemDefault()).getMinute());
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Correct the minutes");
                         alert.setHeaderText(null);

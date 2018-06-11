@@ -37,6 +37,14 @@ import java.util.ResourceBundle;
         mainStage.show();
     }
 
+    public static void getMonthlyAppointmentTypeReportScene() throws IOException
+    {
+        Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmMonthlyAppointmentTypesReport.fxml"));
+        Scene monthlyAppointmentTypeReport = new Scene(root);
+        mainStage.setScene(monthlyAppointmentTypeReport);
+        mainStage.show();
+    }
+
 
 }
 
