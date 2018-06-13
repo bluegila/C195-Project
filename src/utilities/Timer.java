@@ -13,9 +13,9 @@ public class Timer
 {
     public static void addAppointmentTimer(Appointment appointment)
     {
-        if (appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).isAfter(ZonedDateTime.now()))
+        if (appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).isAfter(ZonedDateTime.now()))
         {
-            long timeDistance = appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).toEpochSecond() - ZonedDateTime.now().toEpochSecond();
+            long timeDistance = appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).toEpochSecond() - ZonedDateTime.now().toEpochSecond();
             long timeDelay = timeDistance - (15 * 60);
             if (timeDelay > 0)
             {
@@ -33,7 +33,7 @@ public class Timer
 
     private static void verifyAppointmentReminderAlert(Appointment appointment)
     {
-        if (appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.systemDefault()).toEpochSecond() - ZonedDateTime.now().toEpochSecond() <= (15 * 60))
+        if (appointment.getSqlStartDateTime().toLocalDateTime().atZone(ZoneId.of("UTC")).toEpochSecond() - ZonedDateTime.now().toEpochSecond() <= (15 * 60))
             alertAppointmentReminder(appointment);
     }
 
@@ -42,8 +42,9 @@ public class Timer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Upcoming Appointment");
         alert.setHeaderText(null);
-        alert.setContentText("You have an appointment in 15 minutes: " + appointment.getTitle());
-        alert.showAndWait();
+        alert.setContentText("You have an appointment in 15 minutes or less with: " + appointment.getObjCustomer().getCustomerName() + ".");
+
+        alert.show();
     }
 
 }

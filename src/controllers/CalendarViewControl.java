@@ -2,6 +2,8 @@ package controllers;
 
 //region Imports
 import data.SQLAppointmentDAO;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import models.*;
 import data.SQLContactDAO;
@@ -120,9 +122,12 @@ public class CalendarViewControl implements Initializable
         {
             utilities.Timer.addAppointmentTimer(appointment);
         }
-
-        buildWeekView(Calendar.getInstance());
-        buildMonthView(Calendar.getInstance());
+        Calendar calendarLabel = Calendar.getInstance();
+        String strMonth = calendarLabel.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        String strYear = Integer.toString(calendarLabel.get(Calendar.YEAR));
+        lblCalendarMonthYear.setText(strMonth + ' ' + strYear);
+        buildWeekView(calendarLabel);
+        buildMonthView(calendarLabel);
 
         boxReports.getItems().addAll(Report.Reports.values());
         boxSubject.getItems().addAll(ScheduleType.ScheduleTypes.values());
@@ -161,8 +166,6 @@ public class CalendarViewControl implements Initializable
 
         String strYear = Integer.toString(year);//set year
         String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-
-        lblCalendarMonthYear.setText(strMonth + ' ' + strYear);
 
         calendar.set(Calendar.WEEK_OF_MONTH, 1);
         calendar.set(Calendar.DAY_OF_WEEK,calendar.getFirstDayOfWeek());
@@ -213,7 +216,10 @@ public class CalendarViewControl implements Initializable
                     System.out.println(monthCalendarList.get(listSize));
                     System.out.println(listSize);}
                 final Calendar date = (Calendar)calendar.clone();
-                dateButton.setOnAction(event -> buildWeekView(date));
+                dateButton.setOnAction(event -> {
+                    calWeek.getChildren().clear();
+                    lblCalendarMonthYear.setText(strMonth + ' ' + strYear);
+                    buildWeekView(date);});
                 dateButton.setPrefWidth(40.0);
                 calMonth.setStyle(cssCalLabel);
                 calYear.setStyle(cssCalLabel);
@@ -242,6 +248,16 @@ public class CalendarViewControl implements Initializable
 
     private void buildWeekView(Calendar calendar)
     {
+        for (int col = 1; col < 8; col++) {
+            calendar.set(Calendar.DAY_OF_WEEK, col);
+            String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+            String dayOfMonth = Integer.toString(calendar.get(Calendar.DAY_OF_MONTH));
+            Label dayOfWeekLabel = new Label(dayOfWeek + ' ' + dayOfMonth);
+            dayOfWeekLabel.setPrefWidth(125.0);
+            dayOfWeekLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+          //  dayOfWeekLabel.setStyle("-fx-text-alignment:center;-fx-alignment: center;-fx-label-padding: 5px;-fx-pref-width: 100px;");
+            calWeek.add(dayOfWeekLabel, col, 0);
+        }
         Calendar calendarWeek = calendar;
         calendarWeek.get(Calendar.WEEK_OF_YEAR);
         calendarWeek.set(Calendar.DAY_OF_WEEK,1);
@@ -252,6 +268,7 @@ public class CalendarViewControl implements Initializable
         final double YLAYOUT_OFFSET = 490d;
 
             int comparator = FXCollections.observableArrayList(appointments).size();
+
             for (int j = 0; j <comparator; j++)
             {
                 final Appointment currentAppointment = appointments.get(j);
@@ -317,47 +334,46 @@ public class CalendarViewControl implements Initializable
                 row++;
             }
         }
-        for (int i = 0; i < 7; i++)
-        {
-            //add appt data too
-            int dow = calendarWeek.get(Calendar.DAY_OF_WEEK );
-            if (dow == 1)
-            {
-                lblSunday.setText("Sunday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblSunday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else if (dow == 2)
-            {
-                lblMonday.setText("Monday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblMonday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else if (dow == 3)
-            {
-                lblTuesday.setText("Tuesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblTuesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else if (dow == 4)
-            {
-                lblWednesday.setText("Wednesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblWednesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else if (dow == 5)
-            {
-                lblThursday.setText("Thursday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblThursday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else if (dow == 6)
-            {
-                lblFriday.setText("Friday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblFriday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            else
-            {
-                lblSaturday.setText("Saturday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-                lblSaturday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-            }
-            calendarWeek.add(Calendar.DAY_OF_WEEK, 1);
-        }
+//        for (int i = 0; i < 7; i++)
+//        {
+//            int dow = calendarWeek.get(Calendar.DAY_OF_WEEK );
+//            if (dow == 1)
+//            {
+//                lblSunday.setText("Sunday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblSunday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else if (dow == 2)
+//            {
+//                lblMonday.setText("Monday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblMonday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else if (dow == 3)
+//            {
+//                lblTuesday.setText("Tuesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblTuesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else if (dow == 4)
+//            {
+//                lblWednesday.setText("Wednesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblWednesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else if (dow == 5)
+//            {
+//                lblThursday.setText("Thursday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblThursday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else if (dow == 6)
+//            {
+//                lblFriday.setText("Friday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblFriday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            else
+//            {
+//                lblSaturday.setText("Saturday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
+//                lblSaturday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
+//            }
+//            calendarWeek.add(Calendar.DAY_OF_WEEK, 1);
+//        }
     }
 
     private void clearContactForm()
