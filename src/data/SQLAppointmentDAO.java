@@ -129,5 +129,7 @@ public class SQLAppointmentDAO
         PreparedStatement deleteAppointmentStmt = conn.prepareStatement
                 ("DELETE FROM appointment WHERE appointmentId = ?");
         deleteAppointmentStmt.setInt(1,appointmentId);
+
+        deleteAppointmentStmt.execute();
     }
 }

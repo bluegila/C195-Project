@@ -233,8 +233,6 @@ public class CalendarViewControl implements Initializable
 
             }
         }
-
-
             for (int col = 0; col < 7; col++) {
                 calendar.set(Calendar.DAY_OF_WEEK, col + 1);
                 String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
@@ -303,7 +301,6 @@ public class CalendarViewControl implements Initializable
 
         for (int row = 1; row < 30; row++)
         {
-
             for (int amHour = 5; amHour < 12 & row < 15; amHour++, row++)
             {
                 String strAMHour = Integer.toString(amHour) + ":00 AM";
@@ -649,7 +646,7 @@ public class CalendarViewControl implements Initializable
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        calWeek.getChildren().clear();
         clearAppointmentForm();
         buildWeekView(Calendar.getInstance());
     }
