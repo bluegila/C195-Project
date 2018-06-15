@@ -108,12 +108,13 @@ public class CalendarViewControl implements Initializable
     private ChoiceBox<Report.Reports> boxReports;
  //endregion
     private List<Appointment> appointments;
+    static final User currentUser = LoginControl.getCurrentUser();
     //region @init
     @Override
     public void initialize(URL location, ResourceBundle resources) //from Initializable
     {
         try {
-            appointments = SQLAppointmentDAO.selectAppointment();
+            appointments = SQLAppointmentDAO.selectAppointment(currentUser);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -331,46 +332,6 @@ public class CalendarViewControl implements Initializable
                 row++;
             }
         }
-//        for (int i = 0; i < 7; i++)
-//        {
-//            int dow = calendarWeek.get(Calendar.DAY_OF_WEEK );
-//            if (dow == 1)
-//            {
-//                lblSunday.setText("Sunday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblSunday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else if (dow == 2)
-//            {
-//                lblMonday.setText("Monday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblMonday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else if (dow == 3)
-//            {
-//                lblTuesday.setText("Tuesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblTuesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else if (dow == 4)
-//            {
-//                lblWednesday.setText("Wednesday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblWednesday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else if (dow == 5)
-//            {
-//                lblThursday.setText("Thursday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblThursday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else if (dow == 6)
-//            {
-//                lblFriday.setText("Friday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblFriday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            else
-//            {
-//                lblSaturday.setText("Saturday " + calendarWeek.get(Calendar.DAY_OF_MONTH));
-//                lblSaturday.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
-//            }
-//            calendarWeek.add(Calendar.DAY_OF_WEEK, 1);
-//        }
     }
 
     private void clearContactForm()
@@ -503,7 +464,7 @@ public class CalendarViewControl implements Initializable
     @FXML
     private void addAppointment(ActionEvent actionEvent) throws IOException, SQLException
     {
-        appointments = SQLAppointmentDAO.selectAppointment();
+        appointments = SQLAppointmentDAO.selectAppointment(currentUser);
         if (fieldsAppointmentValidate()) {
             Contact customer = boxCustomer.getSelectionModel().getSelectedItem();
             String subject = boxSubject.getSelectionModel().getSelectedItem().getScheduleTypeName();
@@ -613,7 +574,7 @@ public class CalendarViewControl implements Initializable
                             }
                     }
             try {
-                appointments = SQLAppointmentDAO.selectAppointment();
+                appointments = SQLAppointmentDAO.selectAppointment(currentUser);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -642,7 +603,7 @@ public class CalendarViewControl implements Initializable
             e.printStackTrace();
         }
         try {
-            appointments = SQLAppointmentDAO.selectAppointment();
+            appointments = SQLAppointmentDAO.selectAppointment(currentUser);
         } catch (SQLException e) {
             e.printStackTrace();
         }

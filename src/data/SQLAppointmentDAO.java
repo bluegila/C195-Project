@@ -3,6 +3,7 @@ package data;
 import controllers.LoginControl;
 import models.Appointment;
 import models.Contact;
+import models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,13 +14,16 @@ public class SQLAppointmentDAO
 {
     private static Connection conn = SQLConnection.getConn();
 
-    public static List<Appointment> selectAppointment() throws SQLException
+    public static List<Appointment> selectAppointment(User currentUser) throws SQLException
     {
+        String uname = currentUser.toString();
         List<Appointment> appointments = new ArrayList<>();
         PreparedStatement getAppointmentsFromDB = conn.prepareStatement
                 ("SELECT appointment.customerId, appointment.location, appointment.description, appointment.contact, appointment.url, appointment.appointmentId, appointment.start, appointment.end, appointment.title, customer.customerName " +
                         "FROM appointment " +
-                        "INNER JOIN customer ON customer.customerId = appointment.customerId");
+                        "INNER JOIN customer ON customer.customerId = appointment.customerId " +
+                        "WHERE appointment.createdBy = ?");
+        getAppointmentsFromDB.setString(1, uname);
         ResultSet appointmentsRS = getAppointmentsFromDB.executeQuery();
         while(appointmentsRS.next())
         {

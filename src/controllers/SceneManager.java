@@ -16,7 +16,6 @@ import java.util.ResourceBundle;
     public static void init (Stage stage) throws IOException
      {
         mainStage = stage;
-      //  mainStage.setTitle
         mainStage.setResizable(false);
         Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmLogin.fxml"), ResourceBundle.getBundle("login"));
         Scene loginScene = new Scene(root,300,200);

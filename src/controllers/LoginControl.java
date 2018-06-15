@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -41,8 +42,8 @@ public class LoginControl
         else if (user.verify(password))
         {
             SceneManager.getMainStage().close();
-            SceneManager.getCalendarScene();
             setCurrentUser(user);
+            SceneManager.getCalendarScene();
             loginLog();
         }
         else
