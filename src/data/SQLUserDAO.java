@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 public class SQLUserDAO
@@ -30,6 +33,20 @@ public class SQLUserDAO
 
 
         return null; // fix this
+    }
+
+    public static List<User> getAllUsers() throws SQLException {
+        Connection conn = SQLConnection.getConn();
+        PreparedStatement userSelectStmnt = conn.prepareStatement
+                ("SELECT userName,password FROM user");
+        ResultSet userResultSet = userSelectStmnt.executeQuery();
+        List<User> users = new ArrayList<>();
+
+        while(userResultSet.next())
+        {
+            users.add(new User(userResultSet.getString("userName"),userResultSet.getString("password")));
+        }
+        return users;
     }
 }
 

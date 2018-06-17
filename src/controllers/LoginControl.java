@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -43,7 +42,7 @@ public class LoginControl
         {
             SceneManager.getMainStage().close();
             setCurrentUser(user);
-            SceneManager.getCalendarScene();
+            SceneManager.showCalendarScene();
             loginLog();
         }
         else
@@ -54,14 +53,14 @@ public class LoginControl
     private void loginLog()
     {
         File loginLogFile = new File(System.getProperty("user.dir") + "/login_log.txt");
-        try
+        try(FileWriter writer = new FileWriter(loginLogFile, true))
         {
             loginLogFile.createNewFile();
-            FileWriter writer = new FileWriter(loginLogFile, true);
+
             String log = getCurrentUser().getUsername() + " successfully logged in at " + LocalDateTime.now().format(
                     DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "\n";
             writer.append(log);
-            writer.close();
+
         }
         catch (IOException e)
         {

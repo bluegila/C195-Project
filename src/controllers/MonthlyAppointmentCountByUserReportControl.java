@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MonthlyAppointmentTypeReportControl implements Initializable
+public class MonthlyAppointmentCountByUserReportControl  implements Initializable
 {
     @FXML
     private GridPane gridTypes;
@@ -30,17 +30,9 @@ public class MonthlyAppointmentTypeReportControl implements Initializable
     @FXML
     private ChoiceBox<String> boxYear;
     @FXML
-    private Label lblSystemAnalysis;
+    private Label lblUser;
     @FXML
-    private Label lblReviewWork;
-    @FXML
-    private Label lblTesting;
-    @FXML
-    private Label lblPhone;
-    @FXML
-    private Label lblStakeholders;
-    @FXML
-    private Label lblWrapUp;
+    private Label lblCount;
 
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -87,35 +79,12 @@ public class MonthlyAppointmentTypeReportControl implements Initializable
         ZonedDateTime zonedLastOfMonth = ZonedDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
         Timestamp sqlLastOfMonth = Timestamp.valueOf(zonedLastOfMonth.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
 
-        List<Appointment> appointmentTypes = SQLReportsDAO.getApptsInRange(sqlFirstOfMonth, sqlLastOfMonth);
-        int systemAnalysis = 0;
-        int reviewWork = 0;
-        int testing = 0;
-        int phoneContact = 0;
-        int stakeholders = 0;
-        int projectWrapUp = 0;
+        List<Appointment> appointmentCount = SQLReportsDAO.getApptsInRange(sqlFirstOfMonth, sqlLastOfMonth);
 
-        for(Appointment appointment: appointmentTypes)
-        {
-            if (appointment.getTitle().equals("Performing Systems Analysis"))
-                systemAnalysis++;
-            if (appointment.getTitle().equals("Review of Work Progress"))
-                reviewWork++;
-            if (appointment.getTitle().equals("Testing"))
-                testing++;
-            if (appointment.getTitle().equals("Over the Phone Consultation"))
-                phoneContact++;
-            if (appointment.getTitle().equals("Meeting with Project Stakeholders"))
-                stakeholders++;
-            if (appointment.getTitle().equals("Project Wrap Up"))
-                projectWrapUp++;
-        }
-        lblSystemAnalysis.setText(Integer.toString(systemAnalysis));
-        lblReviewWork.setText(Integer.toString(reviewWork));
-        lblTesting.setText(Integer.toString(testing));
-        lblPhone.setText(Integer.toString(phoneContact));
-        lblStakeholders.setText(Integer.toString(stakeholders));
-        lblWrapUp.setText(Integer.toString(projectWrapUp));
+
+        lblUser.setText(LoginControl.getCurrentUser().getUsername());
+        lblCount.setText(Integer.toString(appointmentCount.size()));
+
     }
 }
 

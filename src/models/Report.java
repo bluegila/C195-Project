@@ -5,7 +5,7 @@ public class Report {
     {
         REPORT_APPT_TYPES ("Monthly Appointment Types"),
         REPORT_SCHEDULE ("Schedule by Consultant"),
-        REPORT_CONTACT_APPTS ("Monthly Appointments by Contact");
+        REPORT_CONTACT_APPTS ("Monthly Appointments Count for Current User");
 
         private final String reportName;
 

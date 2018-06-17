@@ -323,6 +323,7 @@
       </Label>
       <Label layoutX="55.0" layoutY="31.0" text="Reports" />
       <ChoiceBox fx:id="boxReports" layoutX="118.0" layoutY="28.0" prefHeight="25.0" prefWidth="178.0" />
+      <Button fx:id="btnSelectReport" layoutX="308.0" layoutY="28.0" mnemonicParsing="false" onAction="#selectReport" text="Select" />
 
 </children>
 </Pane>

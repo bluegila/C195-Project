@@ -2,8 +2,7 @@ package controllers;
 
 //region Imports
 import data.SQLAppointmentDAO;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+
 import javafx.scene.layout.Pane;
 import models.*;
 import data.SQLContactDAO;
@@ -29,6 +28,7 @@ import java.util.*;
 import javafx.event.ActionEvent;
 import utilities.TimeValidation;
 
+
 //endregion
 
 //region @FXML
@@ -40,20 +40,6 @@ public class CalendarViewControl implements Initializable
     private GridPane calLabel;
     @FXML
     private GridPane calGrid;
-    @FXML
-    private Text lblSunday;
-    @FXML
-    private Text lblMonday;
-    @FXML
-    private Text lblTuesday;
-    @FXML
-    private Text lblWednesday;
-    @FXML
-    private Text lblThursday;
-    @FXML
-    private Text lblFriday;
-    @FXML
-    private Text lblSaturday;
     @FXML
     private GridPane calDaysMonth;
     @FXML
@@ -106,6 +92,7 @@ public class CalendarViewControl implements Initializable
     private Label lblCalendarMonthYear;
     @FXML
     private ChoiceBox<Report.Reports> boxReports;
+
  //endregion
     private List<Appointment> appointments;
     static final User currentUser = LoginControl.getCurrentUser();
@@ -610,6 +597,22 @@ public class CalendarViewControl implements Initializable
         calWeek.getChildren().clear();
         clearAppointmentForm();
         buildWeekView(Calendar.getInstance());
+    }
+
+    @FXML
+    private void selectReport (ActionEvent actionEvent) throws IOException {
+        switch(boxReports.getSelectionModel().getSelectedItem())
+        {
+            case REPORT_APPT_TYPES:
+                SceneManager.showMonthlyAppointmentTypeReportScene();
+                break;
+            case REPORT_SCHEDULE:
+                SceneManager.showWeeklyScheduleByUserReportScene();
+                break;
+            case REPORT_CONTACT_APPTS:
+                SceneManager.showMonthlyAppointmentCountReportScene();
+                break;
+        }
     }
 
     private void clearAppointmentForm()

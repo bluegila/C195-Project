@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
         return mainStage;
     }
 
-    public static void getCalendarScene() throws IOException
+    public static void showCalendarScene() throws IOException
     {
         Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmCalendar.fxml"));
         Scene calendarScene = new Scene(root);
@@ -36,14 +36,34 @@ import java.util.ResourceBundle;
         mainStage.show();
     }
 
-    public static void getMonthlyAppointmentTypeReportScene() throws IOException
+    public static void showMonthlyAppointmentTypeReportScene() throws IOException
     {
+        Stage reportStage = new Stage();
+        reportStage.setResizable(false);
         Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmMonthlyAppointmentTypesReport.fxml"));
         Scene monthlyAppointmentTypeReport = new Scene(root);
-        mainStage.setScene(monthlyAppointmentTypeReport);
-        mainStage.show();
+        reportStage.setScene(monthlyAppointmentTypeReport);
+        reportStage.show();
     }
 
+    public static void showMonthlyAppointmentCountReportScene() throws IOException
+    {
+        Stage reportStage = new Stage();
+        reportStage.setResizable(false);
+        Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmMonthlyAppointmentCountByUserReport.fxml"));
+        Scene monthlyAppointmentCountReport = new Scene(root);
+        reportStage.setScene(monthlyAppointmentCountReport);
+        reportStage.show();
+    }
 
+    public static void showWeeklyScheduleByUserReportScene() throws IOException
+    {
+        Stage reportStage = new Stage();
+        reportStage.setResizable(false);
+        Parent root = FXMLLoader.load(SceneManager.class.getResource("/views/frmConsultantSchedule.fxml"));
+        Scene weeklyScheduleReport = new Scene(root);
+        reportStage.setScene(weeklyScheduleReport);
+        reportStage.show();
+    }
 }
 
